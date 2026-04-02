@@ -101,3 +101,4 @@ def validate_settings(settings: Settings) -> None:
 
     if settings.use_llm and not settings.openai_api_key:
         raise RuntimeError("USE_LLM=true requires OPENAI_API_KEY.")
+

@@ -1,9 +1,18 @@
 from __future__ import annotations
 
 import smtplib
+from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import List
+
+
+def _format_brief_date(brief_date: str) -> str:
+    try:
+        value = datetime.strptime(brief_date, "%Y-%m-%d")
+        return f"{value.strftime('%B')} {value.day}, {value.year}"
+    except ValueError:
+        return brief_date
 
 
 def send_ready_email(
@@ -18,17 +27,20 @@ def send_ready_email(
     brief_date: str,
     reply_to: str,
 ) -> None:
-    subject = f"Your Daily Brief is Ready - {brief_date}"
+    pretty_date = _format_brief_date(brief_date)
+    subject = f"Your Daily Brief is Ready | {pretty_date}"
     plain = (
-        "Your Daily Brief is ready.\n\n"
+        "BERC Daily Briefer by Semih Yucekan.\n"
+        + f"Date: {pretty_date}\n\n"
         + f"Review: {review_url}\n"
     )
     html = f"""
 <html>
 <body style=\"font-family: Segoe UI, sans-serif; color: #111827;\">
-  <p>Your Daily Brief is ready.</p>
+  <p style=\"margin:0 0 6px;font-size:20px;font-weight:700;\">BERC Daily Briefer <italic>by Semih Yucekan</italic></p>
+  <p style=\"margin:0 0 14px;\">Edition: <strong>{pretty_date}</strong></p>
   <p>
-    <a href=\"{review_url}\" style=\"background:#0f766e;color:#ffffff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:600;\">Review</a>
+        <a href=\"{review_url}\" style=\"background:#0f766e;color:#ffffff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:600;\">Review</a>
   </p>
 </body>
 </html>

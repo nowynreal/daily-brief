@@ -5,34 +5,171 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Daily Brief Archive</title>
   <style>
-    body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: linear-gradient(135deg, #e7eef6, #f8f5ec); color: #172554; }
-    main { max-width: 960px; margin: 0 auto; padding: 2rem 1rem; }
-    h1 { margin-bottom: 0.4rem; }
-    .panel { background: rgba(255,255,255,0.95); border: 1px solid #bfdbfe; border-radius: 14px; padding: 1rem; }
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+    :root {
+      --bg-1: #f8fafc;
+      --bg-2: #f1f5f9;
+      --ink: #1e293b;
+      --muted: #475569;
+      --panel: rgba(255, 255, 255, 0.94);
+      --line: #dbe3ee;
+      --accent: #0b3a5e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: 'IBM Plex Sans', sans-serif;
+      background:
+        radial-gradient(900px 450px at 100% -10%, #dde6f3 0%, transparent 62%),
+        linear-gradient(170deg, var(--bg-1), var(--bg-2));
+      min-height: 100vh;
+    }
+    main { max-width: 980px; margin: 0 auto; padding: 1.2rem 1rem 2rem; }
+    .hero {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 1rem;
+    }
+    .hero .accent {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-style: normal;
+      font-size: 0.65em;
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+    h1 { margin: 0; font-family: 'Fraunces', serif; font-size: clamp(1.5rem, 2.5vw, 2rem); }
+    .sub { color: var(--muted); margin: 0.45rem 0 0; }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 0.45rem; }
     table { width: 100%; border-collapse: collapse; }
-    th, td { text-align: left; padding: 0.7rem; border-bottom: 1px solid #dbeafe; }
-    a { color: #0f766e; font-weight: 600; }
+    th, td { text-align: left; padding: 0.72rem; border-bottom: 1px solid #e2e8f0; }
+    th { color: #0b3a5e; font-weight: 700; }
+    td { color: #0f172a; }
+    .action {
+      display: inline-block;
+      text-decoration: none;
+      font-weight: 700;
+      color: #ffffff;
+      background: linear-gradient(135deg, #0b3a5e, #1d4f75);
+      border-radius: 10px;
+      padding: 0.35rem 0.65rem;
+    }
+    .empty { color: var(--muted); text-align: center; padding: 1rem; }
+    .footer {
+      margin-top: 0.95rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.94);
+      padding: 0.85rem;
+    }
+    .footer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+    }
+    .footer-brand { font-size: 0.94rem; color: #334155; }
+    .footer-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+    }
+    .footer-list li {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .footer-list a {
+      color: #0b3a5e;
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 500;
+      border-bottom: 1px solid transparent;
+      transition: color .18s ease, border-color .18s ease, transform .18s ease;
+    }
+    .footer-list a:hover {
+      color: #082a46;
+      border-bottom-color: #0b3a5e;
+      transform: translateY(-1px);
+    }
+    .footer-list a:focus-visible {
+      outline: 2px solid #93c5fd;
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+    .link-icon {
+      color: #64748b;
+      font-size: 0.74rem;
+      line-height: 1;
+    }
+    .footer-note { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+    @media (max-width: 640px) {
+      main { padding: 0.85rem 0.65rem 1.5rem; }
+      th, td { font-size: 0.92rem; padding: 0.6rem 0.5rem; }
+      .action { padding: 0.32rem 0.55rem; font-size: 0.85rem; }
+      .footer { padding: 0.72rem; }
+    }
   </style>
 </head>
 <body>
   <main>
-    <h1>Daily Brief Archive</h1>
-    <p>Generated automatically at 08:00 every day.</p>
+    <section class="hero">
+      <h1>BERC Daily Briefer<span class="accent"> by Semih Yucekan</span></h1>
+    </section>
     <div class="panel">
       <table>
         <thead><tr><th>Date</th><th>Signal</th><th>Score</th><th>Action</th></tr></thead>
-        <tbody><tr><td>2026-04-02</td><td>Stable to mixed</td><td>1</td><td><a href='briefs/2026-04-02.html'>Review</a></td></tr>
-<tr><td>2026-04-02</td><td>Stable to mixed</td><td>1</td><td><a href='briefs/2026-04-02.html'>Review</a></td></tr>
-<tr><td>2026-04-02</td><td>Stable to mixed</td><td>1</td><td><a href='briefs/2026-04-02.html'>Review</a></td></tr>
-<tr><td>2026-04-02</td><td>Stable to mixed</td><td>1</td><td><a href='briefs/2026-04-02.html'>Review</a></td></tr>
-<tr><td>2026-04-01</td><td>Stable to mixed</td><td>1</td><td><a href='briefs/2026-04-01.html'>Review</a></td></tr>
-<tr><td>2026-04-01</td><td>Stable to mixed</td><td>1</td><td><a href='briefs/2026-04-01.html'>Review</a></td></tr>
-<tr><td>2026-04-01</td><td>Stable to mixed</td><td>1</td><td><a href='briefs/2026-04-01.html'>Review</a></td></tr>
-<tr><td>2026-04-01</td><td>Stable to mixed</td><td>1</td><td><a href='briefs/2026-04-01.html'>Review</a></td></tr>
-<tr><td>2026-04-01</td><td>Stable to mixed</td><td>1</td><td><a href='briefs/2026-04-01.html'>Review</a></td></tr>
-<tr><td>2026-04-01</td><td>Stable to mixed</td><td>1</td><td><a href='briefs/2026-04-01.html'>Review</a></td></tr></tbody>
+        <tbody><tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 2, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-02.html'>Review / Incele</a></td></tr>
+<tr><td>April 1, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-01.html'>Review / Incele</a></td></tr>
+<tr><td>April 1, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-01.html'>Review / Incele</a></td></tr>
+<tr><td>April 1, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-01.html'>Review / Incele</a></td></tr>
+<tr><td>April 1, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-01.html'>Review / Incele</a></td></tr>
+<tr><td>April 1, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-01.html'>Review / Incele</a></td></tr>
+<tr><td>April 1, 2026</td><td>Stable to mixed</td><td>1</td><td><a class='action' href='briefs/2026-04-01.html'>Review / Incele</a></td></tr></tbody>
       </table>
     </div>
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand"><strong>BERC Daily Briefer</strong> | Semih Yucekan</div>
+        <nav aria-label="BERC links">
+          <ul class="footer-list">
+            <li><span class="link-icon" aria-hidden="true">&#8599;</span><a href="https://www.mtsu.edu/" target="_blank" rel="noopener noreferrer">MTSU</a></li>
+            <li><span class="link-icon" aria-hidden="true">&#8599;</span><a href="https://www.mtsu.edu/berc/" target="_blank" rel="noopener noreferrer">BERC</a></li>
+            <li><span class="link-icon" aria-hidden="true">&#8599;</span><a href="https://urp.mtsu.edu/" target="_blank" rel="noopener noreferrer">COE-URP</a></li>
+            <li><span class="link-icon" aria-hidden="true">&#8599;</span><a href="https://www.mtsu.edu/give/" target="_blank" rel="noopener noreferrer">Donate BERC</a></li>
+            <li><span class="link-icon" aria-hidden="true">&#8599;</span><a href="https://www.instagram.com/mtsublueraiders/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+            <li><span class="link-icon" aria-hidden="true">&#8599;</span><a href="https://www.linkedin.com/school/middle-tennessee-state-university/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
   </main>
 </body>
 </html>
