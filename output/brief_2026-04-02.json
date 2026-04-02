@@ -1,0 +1,95 @@
+{
+  "id": "20260402T203921Z",
+  "date": "2026-04-02",
+  "region": "Tennessee",
+  "signal_environment": "Stable to mixed",
+  "signal_score": 0,
+  "brief_markdown": "# BERC Daily Briefer | April 2, 2026\nPrepared by Semih Yucekan\n\n## Executive Summary\n- Region: Tennessee\n- Audience: Faculty-style morning read\n- Signal environment: Stable to mixed\n- Indicators collected successfully: 6\n- Indicators failed or missing: 0\n\n## Indicator Snapshot\n- US Unemployment Rate (UNRATE): latest 4.40% on 2026-02-01; previous 4.30%; change 0.10%; pct change 2.33%\n- US Initial Jobless Claims (ICSA): latest 202,000 on 2026-03-28; previous 211,000; change -9,000; pct change -4.27%\n- Tennessee Unemployment Rate (TNUR): latest 3.60% on 2025-12-01; previous 3.60%; change 0.00%; pct change 0.00%\n- Tennessee Nonfarm Employment (TNNA): latest 3,408.9 thousand on 2025-12-01; previous 3,414.0 thousand; change -5.1 thousand; pct change -0.15%\n- US CPI (CPIAUCSL): latest 327.46 on 2026-02-01; previous 326.59; change 0.87; pct change 0.27%\n- 30Y Mortgage Rate (MORTGAGE30US): latest 6.46% on 2026-04-02; previous 6.38%; change 0.08%; pct change 1.25%\n\n## Warning Flags\n- [STABLE] No major warning flags triggered.\n\n## Caveats\n- This edition uses deterministic, rule-based summarization.",
+  "snapshots": [
+    {
+      "name": "US Unemployment Rate",
+      "series_id": "UNRATE",
+      "units": "percent",
+      "frequency": "monthly",
+      "latest_date": "2026-02-01",
+      "latest_value": 4.4,
+      "previous_value": 4.3,
+      "abs_change": 0.10000000000000053,
+      "pct_change": 2.32558139534885,
+      "status": "ok",
+      "note": ""
+    },
+    {
+      "name": "US Initial Jobless Claims",
+      "series_id": "ICSA",
+      "units": "count",
+      "frequency": "weekly",
+      "latest_date": "2026-03-28",
+      "latest_value": 202000.0,
+      "previous_value": 211000.0,
+      "abs_change": -9000.0,
+      "pct_change": -4.265402843601896,
+      "status": "ok",
+      "note": ""
+    },
+    {
+      "name": "Tennessee Unemployment Rate",
+      "series_id": "TNUR",
+      "units": "percent",
+      "frequency": "monthly",
+      "latest_date": "2025-12-01",
+      "latest_value": 3.6,
+      "previous_value": 3.6,
+      "abs_change": 0.0,
+      "pct_change": 0.0,
+      "status": "ok",
+      "note": ""
+    },
+    {
+      "name": "Tennessee Nonfarm Employment",
+      "series_id": "TNNA",
+      "units": "thousands",
+      "frequency": "monthly",
+      "latest_date": "2025-12-01",
+      "latest_value": 3408.9,
+      "previous_value": 3414.0,
+      "abs_change": -5.099999999999909,
+      "pct_change": -0.14938488576449643,
+      "status": "ok",
+      "note": ""
+    },
+    {
+      "name": "US CPI",
+      "series_id": "CPIAUCSL",
+      "units": "index",
+      "frequency": "monthly",
+      "latest_date": "2026-02-01",
+      "latest_value": 327.46,
+      "previous_value": 326.588,
+      "abs_change": 0.8719999999999573,
+      "pct_change": 0.26700307420969455,
+      "status": "ok",
+      "note": ""
+    },
+    {
+      "name": "30Y Mortgage Rate",
+      "series_id": "MORTGAGE30US",
+      "units": "percent",
+      "frequency": "weekly",
+      "latest_date": "2026-04-02",
+      "latest_value": 6.46,
+      "previous_value": 6.38,
+      "abs_change": 0.08000000000000007,
+      "pct_change": 1.2539184952978069,
+      "status": "ok",
+      "note": ""
+    }
+  ],
+  "flags": [
+    {
+      "level": "stable",
+      "score": 0,
+      "message": "No major warning flags triggered."
+    }
+  ]
+}
