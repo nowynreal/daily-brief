@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import base64
 import smtplib
 from datetime import datetime
+from pathlib import Path
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr, parseaddr
@@ -14,6 +16,13 @@ def _format_brief_date(brief_date: str) -> str:
         return f"{value.strftime('%B')} {value.day}, {value.year}"
     except ValueError:
         return brief_date
+
+
+def _load_logo_data_uri() -> str:
+  logo_path = Path(__file__).resolve().parents[2] / "assets" / "berc_logo.png"
+  logo_bytes = logo_path.read_bytes()
+  encoded = base64.b64encode(logo_bytes).decode("ascii")
+  return f"data:image/png;base64,{encoded}"
 
 
 def send_ready_email(
@@ -38,6 +47,7 @@ def send_ready_email(
     )
     from_addr = parseaddr(email_from)[1] or email_from
     display_name = email_from_name or "Semih Yucekan"
+    logo_data_uri = _load_logo_data_uri()
     html = f"""
 <html>
   <body style="margin:0;padding:0;background:#edf2f7;font-family:Segoe UI, Inter, Helvetica, Arial, sans-serif;color:#0f172a;">
@@ -55,7 +65,9 @@ def send_ready_email(
                           <td valign="middle" style="width:52px;padding-right:14px;">
                             <table role="presentation" width="44" height="44" cellpadding="0" cellspacing="0" border="0" style="width:44px;height:44px;">
                               <tr>
-                                <td align="center" valign="middle" style="width:44px;height:44px;border-radius:22px;background:#0f766e;color:#ffffff;font-size:18px;font-weight:700;line-height:44px;">S</td>
+                                <td align="center" valign="middle" style="width:44px;height:44px;border-radius:22px;background:#ffffff;overflow:hidden;">
+                                  <img src="{logo_data_uri}" alt="BERC" width="44" height="44" style="display:block;width:44px;height:44px;border-radius:22px;object-fit:cover;" />
+                                </td>
                               </tr>
                             </table>
                           </td>
@@ -84,19 +96,6 @@ def send_ready_email(
               </td>
             </tr>
             <tr>
-              <td style="padding:0 24px 18px 24px;">
-                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;">
-                  <tr>
-                    <td style="padding:16px 18px;">
-                      <div style="font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#64748b;">Prepared by</div>
-                      <div style="font-size:15px;line-height:1.5;color:#0f172a;font-weight:700;margin-top:4px;">{display_name}</div>
-                      <div style="font-size:13px;line-height:1.6;color:#475569;margin-top:6px;">{from_addr}</div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
               <td align="center" style="padding:8px 24px 24px 24px;">
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
                   <tr>
@@ -112,13 +111,24 @@ def send_ready_email(
               <td style="padding:0 24px 22px 24px;">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-top:1px solid #e2e8f0;">
                   <tr>
-                    <td style="padding-top:16px;font-size:12px;line-height:1.7;color:#64748b;">
-                      Business and Economic Research Center<br />
-                      Contact: {reply_to}
+                    <td
+                      style="
+                        padding-top: 16px;
+                        font-size: 12px;
+                        line-height: 1.7;
+                        color: #64748b;
+                      "
+                    >
+                      <a
+                        href="https://berc.mtsu.edu"
+                        style="color: #64748b; text-decoration: underline"
+                        >Business and Economic Research Center</a
+                      ><br />
+                      Contact: {reply_to} or berc@mtsu.edu
                     </td>
                     <td align="right" valign="top" style="padding-top:16px;font-size:12px;line-height:1.7;color:#64748b;">
-                      Optional unsubscribe placeholder<br />
-                      Manage preferences in your email client
+                      Developed by Semih Yucekan<br />
+                      <a href="https://semihyucekan.com" style="color:#64748b;text-decoration:underline;">semihyucekan.com</a>
                     </td>
                   </tr>
                 </table>
