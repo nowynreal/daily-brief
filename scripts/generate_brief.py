@@ -30,6 +30,22 @@ def _format_value(value, units: str) -> str:
     return f"{value:,.2f}"
 
 
+def _build_review_url(base_review_url: str, brief_date_iso: str) -> str:
+    base = (base_review_url or "").strip()
+    fallback = f"briefs/{brief_date_iso}.html"
+    if not base:
+        return fallback
+
+    # If a concrete page URL is provided, keep it.
+    if base.endswith(".html"):
+        return base
+
+    # BASE_REVIEW_URL may point to a site root or /briefs; append the daily page.
+    if base.endswith("/briefs"):
+        return f"{base}/{brief_date_iso}.html"
+    return f"{base.rstrip('/')}/briefs/{brief_date_iso}.html"
+
+
 def build_brief_markdown(region_name: str, snapshots: List[IndicatorSnapshot], flags: List[WarningFlag]) -> str:
     today = _display_date(date.today())
     ok_count = sum(1 for item in snapshots if item.status == "ok")
@@ -144,7 +160,8 @@ def main() -> int:
         )
         index_path = render_index(settings.site_dir, settings.history_file)
 
-        review_url = settings.base_review_url.strip() or f"briefs/{date.today().isoformat()}.html"
+        today_iso = date.today().isoformat()
+        review_url = _build_review_url(settings.base_review_url, today_iso)
         if settings.send_email:
             send_ready_email(
                 smtp_host=settings.smtp_host,
@@ -156,7 +173,7 @@ def main() -> int:
                 email_cc=settings.email_cc,
                 reply_to=settings.reply_to,
                 review_url=review_url,
-                brief_date=date.today().isoformat(),
+                brief_date=today_iso,
             )
 
         print("Daily brief generated.")

@@ -56,7 +56,7 @@ jobs:
           REGION_NAME: ${{ vars.REGION_NAME }}
           OUTPUT_DIR: output
           SITE_DIR: docs
-          BASE_REVIEW_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/briefs
+          BASE_REVIEW_URL: ${{ vars.BASE_REVIEW_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
           SEND_EMAIL: ${{ vars.SEND_EMAIL }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
