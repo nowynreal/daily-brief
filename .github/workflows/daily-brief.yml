@@ -12,6 +12,9 @@ on:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   generate:
     runs-on: ubuntu-latest
@@ -49,7 +52,37 @@ jobs:
             python -m pip install -r requirements-llm.txt
           fi
 
+      - name: Precheck configuration
+        if: steps.central_time_gate.outputs.should_run == 'true'
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          REGION_NAME: ${{ vars.REGION_NAME }}
+          OUTPUT_DIR: output
+          SITE_DIR: docs
+          BASE_REVIEW_URL: ${{ vars.BASE_REVIEW_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+          SEND_EMAIL: ${{ vars.SEND_EMAIL }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_FROM: ${{ vars.EMAIL_FROM }}
+          EMAIL_TO: ${{ vars.EMAIL_TO }}
+          REPLY_TO: ${{ vars.REPLY_TO }}
+          EMAIL_CC: ${{ vars.EMAIL_CC }}
+          USE_LLM: ${{ vars.USE_LLM }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+        run: |
+          python - <<'PY'
+          from daily_brief.config.settings import load_settings, validate_settings
+
+          settings = load_settings()
+          validate_settings(settings)
+          print("Precheck passed: configuration is valid.")
+          PY
+
       - name: Generate brief
+        id: generate_brief
         if: steps.central_time_gate.outputs.should_run == 'true'
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
@@ -71,6 +104,84 @@ jobs:
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
         run: |
           python python_code.py
+
+      - name: Send failure notification email
+        if: steps.central_time_gate.outputs.should_run == 'true' && failure()
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_FROM: ${{ vars.EMAIL_FROM }}
+          EMAIL_TO: ${{ vars.EMAIL_TO }}
+          EMAIL_CC: ${{ vars.EMAIL_CC }}
+          REPLY_TO: ${{ vars.REPLY_TO }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          TRIGGER: ${{ github.event_name }}
+        run: |
+          python - <<'PY'
+          import os
+          import smtplib
+          from email.mime.multipart import MIMEMultipart
+          from email.mime.text import MIMEText
+
+          smtp_host = (os.getenv("SMTP_HOST") or "").strip()
+          smtp_port = int((os.getenv("SMTP_PORT") or "587").strip())
+          smtp_user = (os.getenv("SMTP_USER") or "").strip()
+          smtp_password = os.getenv("SMTP_PASSWORD") or ""
+          email_from = (os.getenv("EMAIL_FROM") or smtp_user).strip()
+          email_to = [x.strip() for x in (os.getenv("EMAIL_TO") or "").split(",") if x.strip()]
+          email_cc = [x.strip() for x in (os.getenv("EMAIL_CC") or "").split(",") if x.strip()]
+          reply_to = (os.getenv("REPLY_TO") or email_from).strip()
+
+          if not (smtp_host and smtp_user and smtp_password and email_to):
+              print("Failure email skipped: SMTP/recipient settings are incomplete.")
+              raise SystemExit(0)
+
+          subject = "BERC Daily Briefer | System Incident Detected"
+          plain = (
+              "The daily brief workflow failed during execution.\n\n"
+              f"Repository: {os.getenv('REPO', 'unknown')}\n"
+              f"Run ID: {os.getenv('RUN_ID', 'unknown')}\n"
+              f"Trigger: {os.getenv('TRIGGER', 'unknown')}\n"
+              f"Run URL: {os.getenv('RUN_URL', 'unavailable')}\n\n"
+              "Please review the run logs. If this issue persists, report it to the developer for investigation.\n"
+          )
+          html = f"""
+          <html>
+            <body style=\"font-family: Segoe UI, sans-serif; color: #111827;\">
+              <p style=\"margin:0 0 8px;font-size:20px;font-weight:700;\">BERC Daily Briefer</p>
+              <p style=\"margin:0 0 12px;\">A system incident was detected and the daily workflow failed.</p>
+              <p style=\"margin:0 0 6px;\"><strong>Repository:</strong> {os.getenv('REPO', 'unknown')}</p>
+              <p style=\"margin:0 0 6px;\"><strong>Run ID:</strong> {os.getenv('RUN_ID', 'unknown')}</p>
+              <p style=\"margin:0 0 14px;\"><strong>Trigger:</strong> {os.getenv('TRIGGER', 'unknown')}</p>
+              <p style=\"margin:0 0 16px;\">
+                <a href=\"{os.getenv('RUN_URL', '#')}\" style=\"background:#b91c1c;color:#ffffff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:600;\">Open Workflow Run</a>
+              </p>
+              <p style=\"margin:0;\">Please review the logs. If this issue persists, report it to the developer for investigation.</p>
+            </body>
+          </html>
+          """
+
+          msg = MIMEMultipart("alternative")
+          msg["Subject"] = subject
+          msg["From"] = email_from
+          msg["To"] = ", ".join(email_to)
+          if email_cc:
+              msg["Cc"] = ", ".join(email_cc)
+          msg["Reply-To"] = reply_to
+          msg.attach(MIMEText(plain, "plain", "utf-8"))
+          msg.attach(MIMEText(html, "html", "utf-8"))
+
+          with smtplib.SMTP(smtp_host, smtp_port) as server:
+              server.starttls()
+              server.login(smtp_user, smtp_password)
+              server.sendmail(email_from, email_to + email_cc, msg.as_string())
+
+          print("Failure notification email sent.")
+          PY
 
       - name: Commit generated files
         if: steps.central_time_gate.outputs.should_run == 'true'
