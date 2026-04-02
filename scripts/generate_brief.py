@@ -168,6 +168,7 @@ def main() -> int:
                 smtp_port=settings.smtp_port,
                 smtp_user=settings.smtp_user,
                 smtp_password=settings.smtp_password,
+                email_from_name=settings.email_from_name,
                 email_from=settings.email_from,
                 email_to=settings.email_to,
                 email_cc=settings.email_cc,

@@ -21,6 +21,7 @@ class Settings:
     smtp_port: int
     smtp_user: str
     smtp_password: str
+    email_from_name: str
     email_from: str
     email_to: List[str]
     reply_to: str
@@ -72,6 +73,7 @@ def load_settings() -> Settings:
         smtp_port=int(os.getenv("SMTP_PORT", "587")),
         smtp_user=smtp_user,
         smtp_password=os.getenv("SMTP_PASSWORD", ""),
+        email_from_name=os.getenv("EMAIL_FROM_NAME", "Semih Yucekan"),
         email_from=os.getenv("EMAIL_FROM", smtp_user),
         email_to=recipients,
         reply_to=os.getenv("REPLY_TO", os.getenv("EMAIL_FROM", smtp_user)),

@@ -65,6 +65,7 @@ jobs:
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_FROM_NAME: ${{ vars.EMAIL_FROM_NAME || 'Semih Yucekan' }}
           EMAIL_FROM: ${{ vars.EMAIL_FROM }}
           EMAIL_TO: ${{ vars.EMAIL_TO }}
           REPLY_TO: ${{ vars.REPLY_TO }}
@@ -95,6 +96,7 @@ jobs:
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_FROM_NAME: ${{ vars.EMAIL_FROM_NAME || 'Semih Yucekan' }}
           EMAIL_FROM: ${{ vars.EMAIL_FROM }}
           EMAIL_TO: ${{ vars.EMAIL_TO }}
           REPLY_TO: ${{ vars.REPLY_TO }}
@@ -112,6 +114,7 @@ jobs:
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_FROM_NAME: ${{ vars.EMAIL_FROM_NAME || 'Semih Yucekan' }}
           EMAIL_FROM: ${{ vars.EMAIL_FROM }}
           EMAIL_TO: ${{ vars.EMAIL_TO }}
           EMAIL_CC: ${{ vars.EMAIL_CC }}
@@ -126,12 +129,15 @@ jobs:
           import smtplib
           from email.mime.multipart import MIMEMultipart
           from email.mime.text import MIMEText
+          from email.utils import formataddr, parseaddr
 
           smtp_host = (os.getenv("SMTP_HOST") or "").strip()
           smtp_port = int((os.getenv("SMTP_PORT") or "587").strip())
           smtp_user = (os.getenv("SMTP_USER") or "").strip()
           smtp_password = os.getenv("SMTP_PASSWORD") or ""
+          email_from_name = (os.getenv("EMAIL_FROM_NAME") or "Semih Yucekan").strip()
           email_from = (os.getenv("EMAIL_FROM") or smtp_user).strip()
+          from_addr = parseaddr(email_from)[1] or email_from
           email_to = [x.strip() for x in (os.getenv("EMAIL_TO") or "").split(",") if x.strip()]
           email_cc = [x.strip() for x in (os.getenv("EMAIL_CC") or "").split(",") if x.strip()]
           reply_to = (os.getenv("REPLY_TO") or email_from).strip()
@@ -167,7 +173,7 @@ jobs:
 
           msg = MIMEMultipart("alternative")
           msg["Subject"] = subject
-          msg["From"] = email_from
+          msg["From"] = formataddr((email_from_name, from_addr))
           msg["To"] = ", ".join(email_to)
           if email_cc:
               msg["Cc"] = ", ".join(email_cc)
@@ -178,7 +184,7 @@ jobs:
           with smtplib.SMTP(smtp_host, smtp_port) as server:
               server.starttls()
               server.login(smtp_user, smtp_password)
-              server.sendmail(email_from, email_to + email_cc, msg.as_string())
+              server.sendmail(from_addr, email_to + email_cc, msg.as_string())
 
           print("Failure notification email sent.")
           PY
