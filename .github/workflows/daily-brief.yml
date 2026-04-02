@@ -1,0 +1,56 @@
+name: Daily Brief
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 08:00 Europe/Istanbul ~= 05:00 UTC (adjust seasonally if needed)
+    - cron: "0 5 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Generate brief
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          REGION_NAME: ${{ vars.REGION_NAME }}
+          OUTPUT_DIR: output
+          SITE_DIR: docs
+          BASE_REVIEW_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/briefs
+          SEND_EMAIL: ${{ vars.SEND_EMAIL }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_FROM: ${{ vars.EMAIL_FROM }}
+          EMAIL_TO: ${{ vars.EMAIL_TO }}
+          USE_LLM: "false"
+        run: |
+          python python_code.py
+
+      - name: Commit generated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs output
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: generate daily brief"
+            git push
+          fi

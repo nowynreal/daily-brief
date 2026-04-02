@@ -1,0 +1,2 @@
+# No mandatory third-party dependencies for MVP.
+# Optional LLM mode uses openai package from requirements-llm.txt.
