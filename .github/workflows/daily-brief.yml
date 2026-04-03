@@ -3,9 +3,8 @@ name: Daily Brief
 on:
   workflow_dispatch:
   schedule:
-    # Temporary test window: 12:31 PM and 12:36 PM America/Chicago
-    # GitHub cron uses UTC; during CDT (UTC-5):
-    - cron: "36 17 * * *" # 12:36 PM Central
+    # Temporary stress test: run every 5 minutes to verify scheduler path
+    - cron: "*/5 * * * *"
 
 permissions:
   contents: write
