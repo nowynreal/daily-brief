@@ -3,10 +3,9 @@ name: Daily Brief
 on:
   workflow_dispatch:
   schedule:
-    # 08:00 America/Chicago during daylight saving (CDT = UTC-5)
-    # GitHub cron uses UTC
-    - cron: "18 17 * * *"
-    # - cron: "0 13 * * *"
+    # Temporary test window: 12:31 PM and 12:36 PM America/Chicago
+    # GitHub cron uses UTC; during CDT (UTC-5):
+    - cron: "36 17 * * *" # 12:36 PM Central
 
 permissions:
   contents: write
