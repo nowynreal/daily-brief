@@ -312,9 +312,10 @@ def save_brief(
 
 def append_history(history_file: Path, output_paths: Dict[str, Path], signal_env: str, score: int, alert_count: int = 0) -> None:
     history_file.parent.mkdir(parents=True, exist_ok=True)
+    now_utc = datetime.now(timezone.utc)
     record = {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "date": date.today().isoformat(),
+        "generated_at": now_utc.isoformat(),
+        "date": now_utc.date().isoformat(),
         "signal_environment": signal_env,
         "signal_score": score,
         "alert_count": alert_count,
@@ -410,9 +411,6 @@ def render_index(site_dir: Path, history_file: Path) -> Path:
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      margin-bottom: 0.9rem;
-      padding-bottom: 0.8rem;
-      border-bottom: 1px solid #e2e8f0;
     }}
     .site-brand {{
       font-size: 14px;
