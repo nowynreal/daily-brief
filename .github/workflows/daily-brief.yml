@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # Temporary stress test: run every 5 minutes to verify scheduler path
-    - cron: "*/5 * * * *"
+    - cron: "58 12 * * *"
 
 permissions:
   contents: write
