@@ -152,11 +152,13 @@ def main() -> int:
             flags,
         )
 
+        alert_count = len([f for f in flags if f.score > 0])
         append_history(
             settings.history_file,
             paths,
             signal_environment(flags),
             signal_score(flags),
+            alert_count=alert_count,
         )
         index_path = render_index(settings.site_dir, settings.history_file)
 
