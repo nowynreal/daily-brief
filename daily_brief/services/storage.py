@@ -350,8 +350,7 @@ def render_index(site_dir: Path, history_file: Path) -> Path:
                 badge_class = "moderate"
             
             alert_word = "alert" if alert_count == 1 else "alerts"
-            context_msg = "No indicator crossed its warning threshold." if alert_count == 0 else f"{alert_count} economic indicator(s) triggered warning."
-            
+                        
             cards.append(f"""        <div class="brief-card">
           <div class="brief-meta">
             <div class="brief-date">{display_date}</div>
@@ -362,7 +361,6 @@ def render_index(site_dir: Path, history_file: Path) -> Path:
                 <span><strong>{alert_count} {alert_word}</strong> triggered</span>
               </div>
             </div>
-            <p class="brief-context">{context_msg}</p>
           </div>
           <div class="brief-actions">
             <a href="{href}" class="brief-btn">Review Full Brief</a>
