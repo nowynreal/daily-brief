@@ -28,6 +28,16 @@ def _reliability_label(source_type: str, collection_method: str) -> str:
     return "medium"
 
 
+def _change_direction(abs_change: float | None, epsilon: float) -> tuple[str, str]:
+    if abs_change is None:
+        return "->", "flat"
+    if abs(abs_change) <= max(0.0, epsilon):
+        return "->", "flat"
+    if abs_change > 0:
+        return "^", "increase"
+    return "v", "decrease"
+
+
 def normalize_fetch_result(
     indicator: IndicatorDefinition,
     fetch_result: ConnectorFetchResult,
@@ -69,6 +79,9 @@ def normalize_fetch_result(
         if previous_value != 0:
             pct_change = (abs_change / previous_value) * 100.0
 
+    epsilon = float(indicator.transform_rules.get("flat_epsilon", 0.0))
+    change_arrow, change_label = _change_direction(abs_change, epsilon)
+
     if fetch_result.status != "ok":
         status = "error"
         note = fetch_result.note
@@ -94,6 +107,8 @@ def normalize_fetch_result(
         previous_value=previous_value,
         abs_change=abs_change,
         pct_change=pct_change,
+        change_arrow=change_arrow,
+        change_label=change_label,
         trend_dates=[row.observation_date for row in reversed(trend_rows)],
         trend_values=[float(row.value) for row in reversed(trend_rows) if row.value is not None],
         status=status,

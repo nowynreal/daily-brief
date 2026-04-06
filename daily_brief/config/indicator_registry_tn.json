@@ -5,7 +5,7 @@
     {
       "id": "tn_unemployment_rate",
       "title": "Tennessee Unemployment Rate",
-      "category": "Labor Market Indicators",
+      "category": "Labor Market",
       "geography": "Tennessee",
       "frequency": "monthly",
       "units": "percent",
@@ -32,7 +32,7 @@
     {
       "id": "tn_nonfarm_employment",
       "title": "Tennessee Nonfarm Employment",
-      "category": "Labor Market Indicators",
+      "category": "Labor Market",
       "geography": "Tennessee",
       "frequency": "monthly",
       "units": "thousands",
@@ -59,7 +59,7 @@
     {
       "id": "us_initial_jobless_claims",
       "title": "US Initial Jobless Claims",
-      "category": "Labor Market Indicators",
+      "category": "Labor Market",
       "geography": "United States",
       "frequency": "weekly",
       "units": "count",
@@ -86,7 +86,7 @@
     {
       "id": "us_cpi",
       "title": "US CPI",
-      "category": "Consumer Activity Indicators",
+      "category": "Consumer Activity",
       "geography": "United States",
       "frequency": "monthly",
       "units": "index",
@@ -113,7 +113,7 @@
     {
       "id": "us_retail_sales",
       "title": "US Retail and Food Services Sales",
-      "category": "Consumer Activity Indicators",
+      "category": "Consumer Activity",
       "geography": "United States",
       "frequency": "monthly",
       "units": "million_usd",
@@ -138,9 +138,43 @@
       "phase": "phase_1"
     },
     {
+      "id": "economic_search_index",
+      "title": "Economic Search Intensity Index",
+      "category": "Consumer Activity",
+      "geography": "Tennessee",
+      "frequency": "weekly",
+      "units": "index",
+      "source_type": "structured_api",
+      "source_name": "Google Trends",
+      "source_url": "https://trends.google.com/trends/",
+      "collection_method": "google_trends_api",
+      "economic_signal": "higher_is_worse",
+      "interpretation": "Rising search intensity for job stress and financial distress terms can indicate weakening household conditions.",
+      "active": true,
+      "transform_rules": {
+        "signal_metric": "abs_change",
+        "watch_threshold": 3.0,
+        "alert_threshold": 8.0,
+        "flat_epsilon": 0.5,
+        "max_trend_points": 14
+      },
+      "display_priority": 22,
+      "source_params": {
+        "keywords": [
+          "jobs near me",
+          "unemployment benefits",
+          "houses for sale",
+          "bankruptcy attorney"
+        ],
+        "geo": "US-TN",
+        "timeframe": "today 3-m"
+      },
+      "phase": "phase_1"
+    },
+    {
       "id": "us_industrial_production",
       "title": "US Industrial Production Index",
-      "category": "Business Activity Indicators",
+      "category": "Business Activity",
       "geography": "United States",
       "frequency": "monthly",
       "units": "index",
@@ -167,7 +201,7 @@
     {
       "id": "mortgage_30y_rate",
       "title": "30-Year Fixed Mortgage Rate",
-      "category": "Housing Market Indicators",
+      "category": "Housing Market",
       "geography": "United States",
       "frequency": "weekly",
       "units": "percent",
@@ -194,7 +228,7 @@
     {
       "id": "us_regular_gas_price",
       "title": "US Regular Gasoline Price",
-      "category": "Transportation / Travel Indicators",
+      "category": "Transportation / Travel",
       "geography": "United States",
       "frequency": "weekly",
       "units": "usd_per_gallon",
@@ -221,7 +255,7 @@
     {
       "id": "tn_online_job_postings",
       "title": "Tennessee Online Job Postings",
-      "category": "Labor Market Indicators",
+      "category": "Labor Market",
       "geography": "Tennessee",
       "frequency": "weekly",
       "units": "count",
@@ -244,7 +278,7 @@
     {
       "id": "tn_apartment_rent_listings",
       "title": "Tennessee Apartment Rent Listings",
-      "category": "Housing Market Indicators",
+      "category": "Housing Market",
       "geography": "Tennessee",
       "frequency": "weekly",
       "units": "usd",
@@ -267,7 +301,7 @@
     {
       "id": "tn_freight_load_postings",
       "title": "Tennessee Freight Load Postings",
-      "category": "Transportation / Travel Indicators",
+      "category": "Transportation / Travel",
       "geography": "Tennessee",
       "frequency": "daily",
       "units": "count",
@@ -290,7 +324,7 @@
     {
       "id": "tn_restaurant_activity",
       "title": "Tennessee Restaurant Activity Proxy",
-      "category": "Consumer Activity Indicators",
+      "category": "Consumer Activity",
       "geography": "Tennessee",
       "frequency": "daily",
       "units": "index",
@@ -313,7 +347,7 @@
     {
       "id": "tn_small_business_closures",
       "title": "Tennessee Small Business Closures Signal",
-      "category": "Business Activity Indicators",
+      "category": "Business Activity",
       "geography": "Tennessee",
       "frequency": "monthly",
       "units": "count",
@@ -335,3 +369,4 @@
     }
   ]
 }
+

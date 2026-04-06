@@ -131,46 +131,60 @@ def _render_platform_dashboard(platform_payload: Optional[dict]) -> str:
     if not platform_payload:
         return ""
 
-    counts = platform_payload.get("headline_counts", {})
     environment = html.escape(str(platform_payload.get("signal_environment", "Unknown")))
-    score = int(platform_payload.get("signal_score", 0) or 0)
 
-    summary_cards = f"""
-      <section class="platform-summary" aria-label="Expanded indicator summary">
-        <div class="summary-card">
-          <div class="summary-kicker">Overall signal</div>
-          <div class="summary-value">{environment}</div>
-          <div class="summary-sub">Score: {score}</div>
-        </div>
-        <div class="summary-card">
-          <div class="summary-kicker">Direction mix</div>
-          <div class="summary-value">{counts.get('improving', 0)} improving</div>
-          <div class="summary-sub">{counts.get('worsening', 0)} worsening, {counts.get('stable', 0)} stable</div>
-        </div>
-        <div class="summary-card">
-          <div class="summary-kicker">Data quality</div>
-          <div class="summary-value">{counts.get('unknown', 0)} unknown</div>
-          <div class="summary-sub">Source metadata and methods listed below</div>
-        </div>
-      </section>
-    """
+    category_cards = []
+    for category in platform_payload.get("categories", []):
+        category_name = html.escape(str(category.get("category", "Unknown")))
+        index_name = html.escape(str(category.get("index_name", f"{category_name} Index")))
+        status = html.escape(str(category.get("status", "Stable")))
+        status_class = status.lower()
+        composite_score = category.get("composite_score")
+        score_text = "Index: n/a" if composite_score is None else f"Index: {float(composite_score):+.2f}"
+
+        category_cards.append(
+            f"""
+            <article class="category-card">
+              <div class="summary-kicker">{index_name}</div>
+              <div class="summary-value">{category_name}</div>
+              <div class="summary-sub">{score_text}</div>
+              <span class="status-pill {status_class}">{status}</span>
+            </article>
+            """
+        )
 
     category_sections = []
     for category in platform_payload.get("categories", []):
         category_name = html.escape(str(category.get("category", "Uncategorized")))
-        category_signal = html.escape(str(category.get("signal", "stable")))
+        category_signal = html.escape(str(category.get("status", "Stable")))
+        category_signal_class = category_signal.lower()
         counts_block = category.get("counts", {})
 
         indicator_cards = []
         for indicator in category.get("indicators", []):
             title = html.escape(str(indicator.get("title", indicator.get("indicator_id", "Indicator"))))
             latest = _format_dashboard_value(indicator.get("latest_value"), str(indicator.get("units", "")))
-            change = indicator.get("pct_change")
-            if change is None:
-                change_text = "Change unavailable"
-            else:
-                change_text = f"{change:+.2f}%"
+            abs_change = indicator.get("abs_change")
+            pct_change = indicator.get("pct_change")
 
+            if pct_change is not None:
+                change_text = f"{float(pct_change):+.2f}%"
+            elif abs_change is not None:
+                change_text = _format_dashboard_value(abs_change, str(indicator.get("units", "")))
+            else:
+                change_text = "No change data"
+
+            raw_arrow = str(indicator.get("change_arrow", "->"))
+            arrow = "&#8594;"
+            change_class = "flat"
+            if raw_arrow == "^":
+                arrow = "&#8593;"
+                change_class = "up"
+            elif raw_arrow == "v":
+                arrow = "&#8595;"
+                change_class = "down"
+
+            change_label = html.escape(str(indicator.get("change_label", "flat")).capitalize())
             direction = html.escape(str(indicator.get("signal_direction", "unknown")))
             strength = html.escape(str(indicator.get("signal_strength", "stable")))
             source_name = html.escape(str(indicator.get("source_name", "Unknown source")))
@@ -195,6 +209,7 @@ def _render_platform_dashboard(platform_payload: Optional[dict]) -> str:
                 <div class="indicator-values">
                   <div class="latest">Latest: <strong>{latest}</strong></div>
                   <div class="change">Period change: {change_text}</div>
+                  <div class="change-chip {change_class}"><span class="arrow" aria-hidden="true">{arrow}</span>{change_label}</div>
                 </div>
                 <div class="trend-sparkline">{sparkline}</div>
                 <p class="indicator-note">{interpretation}</p>
@@ -208,7 +223,7 @@ def _render_platform_dashboard(platform_payload: Optional[dict]) -> str:
           <section class="category-section">
             <div class="category-head">
               <h3>{category_name}</h3>
-              <span class="category-signal">{category_signal}</span>
+              <span class="category-signal {category_signal_class}">{category_signal}</span>
             </div>
             <p class="category-stats">
               {counts_block.get('improving', 0)} improving | {counts_block.get('worsening', 0)} worsening | {counts_block.get('stable', 0)} stable | {counts_block.get('unknown', 0)} unknown
@@ -235,8 +250,8 @@ def _render_platform_dashboard(platform_payload: Optional[dict]) -> str:
     return f"""
     <section class="platform-dashboard">
       <h2>Expanded Tennessee Indicator Monitor</h2>
-      <p class="platform-intro">This dashboard highlights what changed, why it matters, and how reliable the source stream is.</p>
-      {summary_cards}
+      <p class="platform-intro">{environment}. This dashboard highlights what changed, why it matters, and how reliable each signal is.</p>
+      <section class="category-overview" aria-label="Category status cards">{''.join(category_cards)}</section>
       {''.join(category_sections)}
       {methodology_html}
     </section>
@@ -344,21 +359,41 @@ def markdown_to_basic_html(markdown_text: str, title: str, platform_payload: Opt
       font-size: 1.2rem;
     }}
     .platform-intro {{ color: var(--muted); margin: 0.45rem 0 0.8rem; }}
-    .platform-summary {{
+    .category-overview {{
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 0.7rem;
       margin-bottom: 0.9rem;
     }}
-    .summary-card {{
+    .category-card {{
       border: 1px solid #dbe7f3;
       background: #f8fbff;
       border-radius: 11px;
       padding: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
     }}
     .summary-kicker {{ font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b; }}
     .summary-value {{ font-weight: 700; margin-top: 0.2rem; }}
     .summary-sub {{ font-size: 0.86rem; color: #475569; margin-top: 0.12rem; }}
+    .status-pill {{
+      display: inline-block;
+      width: fit-content;
+      margin-top: 0.35rem;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      padding: 0.18rem 0.55rem;
+      font-weight: 700;
+      color: #334155;
+    }}
+    .status-pill.improving {{ border-color: #86efac; background: #ecfdf3; color: #166534; }}
+    .status-pill.weakening {{ border-color: #fca5a5; background: #fef2f2; color: #991b1b; }}
+    .status-pill.stable {{ border-color: #cbd5e1; background: #f8fafc; color: #334155; }}
     .category-section {{
       border-top: 1px solid #e2e8f0;
       padding-top: 0.9rem;
@@ -383,6 +418,9 @@ def markdown_to_basic_html(markdown_text: str, title: str, platform_payload: Opt
       color: #334155;
       font-weight: 600;
     }}
+    .category-signal.improving {{ border-color: #86efac; background: #ecfdf3; color: #166534; }}
+    .category-signal.weakening {{ border-color: #fca5a5; background: #fef2f2; color: #991b1b; }}
+    .category-signal.stable {{ border-color: #cbd5e1; background: #f8fafc; color: #334155; }}
     .category-stats {{ margin: 0.35rem 0 0.7rem; color: #64748b; font-size: 0.88rem; }}
     .indicator-grid {{
       display: grid;
@@ -402,6 +440,24 @@ def markdown_to_basic_html(markdown_text: str, title: str, platform_payload: Opt
     .direction-tag {{ font-size: 0.74rem; color: #475569; text-transform: uppercase; letter-spacing: 0.03em; }}
     .indicator-values {{ margin-top: 0.35rem; font-size: 0.86rem; color: #334155; }}
     .latest strong {{ color: #0f172a; }}
+    .change-chip {{
+      margin-top: 0.25rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #334155;
+      padding: 0.12rem 0.45rem;
+      width: fit-content;
+    }}
+    .change-chip.up {{ border-color: #86efac; background: #ecfdf3; color: #166534; }}
+    .change-chip.down {{ border-color: #fca5a5; background: #fef2f2; color: #991b1b; }}
+    .change-chip.flat {{ border-color: #cbd5e1; background: #f8fafc; color: #334155; }}
+    .change-chip .arrow {{ font-size: 0.86rem; line-height: 1; }}
     .trend-sparkline svg {{ width: 100%; height: 34px; display: block; margin-top: 0.2rem; }}
     .indicator-note {{ margin: 0.3rem 0; font-size: 0.82rem; color: #475569; line-height: 1.4; }}
     .indicator-source {{ margin: 0; font-size: 0.8rem; color: #64748b; }}
@@ -475,7 +531,7 @@ def markdown_to_basic_html(markdown_text: str, title: str, platform_payload: Opt
     @media (max-width: 640px) {{
       .wrap {{ padding: 0.9rem 0.75rem 1.4rem; }}
       .card {{ padding: 0.95rem; }}
-      .platform-summary {{ grid-template-columns: 1fr; }}
+      .category-overview {{ grid-template-columns: 1fr; }}
       .footer {{ padding: 0.75rem; }}
       .footer-top {{ margin-bottom: 0.45rem; }}
     }}

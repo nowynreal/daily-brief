@@ -234,7 +234,7 @@ class PlatformStorage:
                 ),
             )
 
-    def recent_values(self, indicator_id: str, limit: int = 12) -> List[Dict[str, object]]:
+    def recent_values(self, indicator_id: str, limit: int = 14) -> List[Dict[str, object]]:
         with self._connect() as conn:
             rows = conn.execute(
                 """

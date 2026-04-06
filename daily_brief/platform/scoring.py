@@ -6,6 +6,23 @@ from typing import Dict, List
 from daily_brief.platform.models import IndicatorDefinition, IndicatorSnapshot
 
 
+CATEGORY_ORDER = [
+    "Labor Market",
+    "Consumer Activity",
+    "Business Activity",
+    "Housing Market",
+    "Transportation / Travel",
+]
+
+INDEX_NAME_BY_CATEGORY = {
+    "Labor Market": "Labor Market Index",
+    "Consumer Activity": "Consumer Activity Index",
+    "Business Activity": "Business Activity Index",
+    "Housing Market": "Housing Index",
+    "Transportation / Travel": "Transportation / Travel Index",
+}
+
+
 def _metric_value(snapshot: IndicatorSnapshot, metric_name: str):
     if metric_name == "pct_change":
         return snapshot.pct_change
@@ -49,6 +66,7 @@ def apply_indicator_signal(snapshot: IndicatorSnapshot, indicator: IndicatorDefi
         snapshot.signal_direction = "unknown"
         snapshot.signal_strength = "stable"
         snapshot.signal_score = 0
+        snapshot.normalized_signal = 0.0
         return snapshot
 
     rules = indicator.transform_rules or {}
@@ -58,6 +76,7 @@ def apply_indicator_signal(snapshot: IndicatorSnapshot, indicator: IndicatorDefi
         snapshot.signal_direction = "unknown"
         snapshot.signal_strength = "stable"
         snapshot.signal_score = 0
+        snapshot.normalized_signal = 0.0
         return snapshot
 
     watch_threshold = float(rules.get("watch_threshold", 0.0))
@@ -83,6 +102,17 @@ def apply_indicator_signal(snapshot: IndicatorSnapshot, indicator: IndicatorDefi
     snapshot.signal_direction = direction
     snapshot.signal_strength = strength
     snapshot.signal_score = score
+
+    if direction == "improving":
+        sign = 1.0
+    elif direction == "worsening":
+        sign = -1.0
+    else:
+        sign = 0.0
+
+    base = watch_threshold if watch_threshold > 0 else (alert_threshold if alert_threshold > 0 else 1.0)
+    normalized_magnitude = min(1.0, magnitude / base) if base > 0 else 0.0
+    snapshot.normalized_signal = sign * normalized_magnitude
     return snapshot
 
 
@@ -99,8 +129,11 @@ def build_category_summaries(snapshots: List[IndicatorSnapshot]) -> List[Dict[st
     for item in snapshots:
         grouped[item.category].append(item)
 
+    for category in CATEGORY_ORDER:
+        grouped.setdefault(category, [])
+
     summaries: List[Dict[str, object]] = []
-    for category in sorted(grouped):
+    for category in CATEGORY_ORDER:
         items = sorted(grouped[category], key=lambda value: value.display_priority)
         improving = sum(1 for row in items if row.signal_direction == "improving")
         worsening = sum(1 for row in items if row.signal_direction == "worsening")
@@ -108,15 +141,36 @@ def build_category_summaries(snapshots: List[IndicatorSnapshot]) -> List[Dict[st
         unknown = sum(1 for row in items if row.signal_direction == "unknown" or row.status != "ok")
         score = sum(row.signal_score for row in items)
 
+        composite_components = [
+            row.normalized_signal
+            for row in items
+            if row.status == "ok" and row.signal_direction in {"improving", "worsening", "stable"}
+        ]
+        composite_score = (
+            round(sum(composite_components) / len(composite_components), 3)
+            if composite_components
+            else None
+        )
+
+        status = "Stable"
+        if composite_score is not None:
+            if composite_score >= 0.2:
+                status = "Improving"
+            elif composite_score <= -0.2:
+                status = "Weakening"
+
         signal = "stable"
-        if score >= 3:
-            signal = "elevated"
-        elif score >= 1:
-            signal = "watch"
+        if status == "Improving":
+            signal = "improving"
+        elif status == "Weakening":
+            signal = "weakening"
 
         summaries.append(
             {
                 "category": category,
+                "index_name": INDEX_NAME_BY_CATEGORY.get(category, f"{category} Index"),
+                "status": status,
+                "composite_score": composite_score,
                 "signal": signal,
                 "score": score,
                 "counts": {

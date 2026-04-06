@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Dict, List
 
 from daily_brief.platform.connectors.fred_connector import FredConnector
+from daily_brief.platform.connectors.google_trends_connector import GoogleTrendsConnector
 from daily_brief.platform.models import ConnectorFetchResult, IndicatorSnapshot
 from daily_brief.platform.normalization import normalize_fetch_result
 from daily_brief.platform.registry import list_active_indicators, load_indicator_registry
@@ -72,6 +73,7 @@ def run_indicator_pipeline(
     connectors = {}
     if fred_api_key:
         connectors["fred_api"] = FredConnector(api_key=fred_api_key)
+    connectors["google_trends_api"] = GoogleTrendsConnector()
 
     snapshots: List[IndicatorSnapshot] = []
     normalized_rows = []
@@ -98,7 +100,7 @@ def run_indicator_pipeline(
     storage.upsert_observations(normalized_rows)
 
     for snapshot in snapshots:
-        history = storage.recent_values(snapshot.indicator_id, limit=12)
+        history = storage.recent_values(snapshot.indicator_id, limit=14)
         if history:
             snapshot.trend_dates = [str(item["observation_date"]) for item in history]
             snapshot.trend_values = [float(item["value"]) for item in history if item.get("value") is not None]
@@ -107,6 +109,16 @@ def run_indicator_pipeline(
     snapshot_dicts = [asdict(item) for item in snapshots]
 
     category_summaries = build_category_summaries(snapshots)
+    category_indexes = [
+        {
+            "category": item.get("category"),
+            "index_name": item.get("index_name"),
+            "status": item.get("status"),
+            "composite_score": item.get("composite_score"),
+            "indicator_count": item.get("indicator_count"),
+        }
+        for item in category_summaries
+    ]
     total_signal_score = sum(item.signal_score for item in snapshots)
     signal_environment = platform_signal_environment(total_signal_score)
 
@@ -149,6 +161,7 @@ def run_indicator_pipeline(
         "signal_score": total_signal_score,
         "headline_counts": headline_counts,
         "categories": category_summaries,
+        "category_indexes": category_indexes,
         "indicators": snapshot_dicts,
         "source_summary": source_summary,
         "methodology_notes": methodology_notes,

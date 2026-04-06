@@ -64,6 +64,8 @@ class IndicatorSnapshot:
     previous_value: Optional[float]
     abs_change: Optional[float]
     pct_change: Optional[float]
+    change_arrow: str = "->"
+    change_label: str = "flat"
     trend_dates: List[str] = field(default_factory=list)
     trend_values: List[float] = field(default_factory=list)
     status: str = "ok"
@@ -78,4 +80,5 @@ class IndicatorSnapshot:
     signal_direction: str = "unknown"
     signal_strength: str = "stable"
     signal_score: int = 0
+    normalized_signal: float = 0.0
     reliability: str = "medium"
