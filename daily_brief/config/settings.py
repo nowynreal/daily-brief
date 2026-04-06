@@ -29,6 +29,8 @@ class Settings:
     use_llm: bool
     openai_api_key: str
     openai_model: str
+    indicator_registry_path: Path
+    indicator_db_path: Path
 
 
 DEFAULT_INDICATORS = [
@@ -57,6 +59,10 @@ def load_settings() -> Settings:
     output_dir = Path(os.getenv("OUTPUT_DIR", "output"))
     site_dir = Path(os.getenv("SITE_DIR", "docs"))
     history_file = output_dir / "history.jsonl"
+    indicator_registry_path = Path(
+        os.getenv("INDICATOR_REGISTRY_PATH", "daily_brief/config/indicator_registry_tn.json")
+    )
+    indicator_db_path = Path(os.getenv("INDICATOR_DB_PATH", str(output_dir / "indicator_store.sqlite3")))
     recipients = _env_list("EMAIL_TO")
     cc_recipients = _env_list("EMAIL_CC")
 
@@ -81,6 +87,8 @@ def load_settings() -> Settings:
         use_llm=_env_bool("USE_LLM", False),
         openai_api_key=os.getenv("OPENAI_API_KEY", ""),
         openai_model=os.getenv("OPENAI_MODEL", "gpt-5.3-mini"),
+        indicator_registry_path=indicator_registry_path,
+        indicator_db_path=indicator_db_path,
     )
 
 
@@ -103,4 +111,7 @@ def validate_settings(settings: Settings) -> None:
 
     if settings.use_llm and not settings.openai_api_key:
         raise RuntimeError("USE_LLM=true requires OPENAI_API_KEY.")
+
+    if not settings.indicator_registry_path.exists():
+        raise RuntimeError(f"Indicator registry file not found: {settings.indicator_registry_path}")
 

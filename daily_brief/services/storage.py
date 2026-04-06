@@ -6,7 +6,7 @@ import re
 from dataclasses import asdict
 from datetime import date, datetime, timezone
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from daily_brief.analysis.rules import signal_environment, signal_score
 from daily_brief.models import IndicatorSnapshot, WarningFlag
@@ -85,8 +85,167 @@ def _markdown_body_to_html(markdown_text: str) -> str:
     return "\n".join(out)
 
 
-def markdown_to_basic_html(markdown_text: str, title: str) -> str:
+def _format_dashboard_value(value, units: str) -> str:
+    if value is None:
+        return "NA"
+    if units == "percent":
+        return f"{value:.2f}%"
+    if units == "count":
+        return f"{value:,.0f}"
+    if units == "thousands":
+        return f"{value:,.1f}k"
+    if units == "usd_per_gallon":
+        return f"${value:.2f}/gal"
+    if units == "million_usd":
+        return f"${value:,.0f}M"
+    return f"{value:,.2f}"
+
+
+def _sparkline_svg(values: List[float]) -> str:
+    if len(values) < 2:
+        return '<svg viewBox="0 0 120 34" aria-hidden="true"></svg>'
+
+    width = 120
+    height = 34
+    min_value = min(values)
+    max_value = max(values)
+    spread = (max_value - min_value) or 1.0
+
+    points = []
+    for index, value in enumerate(values):
+        x = (index / max(1, len(values) - 1)) * width
+        y = height - (((value - min_value) / spread) * (height - 4)) - 2
+        points.append(f"{x:.1f},{y:.1f}")
+
+    polyline = " ".join(points)
+    return (
+        '<svg viewBox="0 0 120 34" aria-hidden="true">'
+        + '<polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="'
+        + polyline
+        + '" />'
+        + "</svg>"
+    )
+
+
+def _render_platform_dashboard(platform_payload: Optional[dict]) -> str:
+    if not platform_payload:
+        return ""
+
+    counts = platform_payload.get("headline_counts", {})
+    environment = html.escape(str(platform_payload.get("signal_environment", "Unknown")))
+    score = int(platform_payload.get("signal_score", 0) or 0)
+
+    summary_cards = f"""
+      <section class="platform-summary" aria-label="Expanded indicator summary">
+        <div class="summary-card">
+          <div class="summary-kicker">Overall signal</div>
+          <div class="summary-value">{environment}</div>
+          <div class="summary-sub">Score: {score}</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-kicker">Direction mix</div>
+          <div class="summary-value">{counts.get('improving', 0)} improving</div>
+          <div class="summary-sub">{counts.get('worsening', 0)} worsening, {counts.get('stable', 0)} stable</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-kicker">Data quality</div>
+          <div class="summary-value">{counts.get('unknown', 0)} unknown</div>
+          <div class="summary-sub">Source metadata and methods listed below</div>
+        </div>
+      </section>
+    """
+
+    category_sections = []
+    for category in platform_payload.get("categories", []):
+        category_name = html.escape(str(category.get("category", "Uncategorized")))
+        category_signal = html.escape(str(category.get("signal", "stable")))
+        counts_block = category.get("counts", {})
+
+        indicator_cards = []
+        for indicator in category.get("indicators", []):
+            title = html.escape(str(indicator.get("title", indicator.get("indicator_id", "Indicator"))))
+            latest = _format_dashboard_value(indicator.get("latest_value"), str(indicator.get("units", "")))
+            change = indicator.get("pct_change")
+            if change is None:
+                change_text = "Change unavailable"
+            else:
+                change_text = f"{change:+.2f}%"
+
+            direction = html.escape(str(indicator.get("signal_direction", "unknown")))
+            strength = html.escape(str(indicator.get("signal_strength", "stable")))
+            source_name = html.escape(str(indicator.get("source_name", "Unknown source")))
+            source_url = html.escape(str(indicator.get("source_url", "")))
+            interpretation = html.escape(str(indicator.get("interpretation", "")))
+
+            trend_values = [float(v) for v in indicator.get("trend_values", []) if v is not None]
+            sparkline = _sparkline_svg(trend_values)
+            source_link = (
+                f'<a href="{source_url}" target="_blank" rel="noopener noreferrer">{source_name}</a>'
+                if source_url
+                else source_name
+            )
+
+            indicator_cards.append(
+                f"""
+              <article class="indicator-card strength-{strength}">
+                <div class="indicator-top">
+                  <h4>{title}</h4>
+                  <span class="direction-tag">{direction}</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>{latest}</strong></div>
+                  <div class="change">Period change: {change_text}</div>
+                </div>
+                <div class="trend-sparkline">{sparkline}</div>
+                <p class="indicator-note">{interpretation}</p>
+                <p class="indicator-source">Source: {source_link}</p>
+              </article>
+              """
+            )
+
+        category_sections.append(
+            f"""
+          <section class="category-section">
+            <div class="category-head">
+              <h3>{category_name}</h3>
+              <span class="category-signal">{category_signal}</span>
+            </div>
+            <p class="category-stats">
+              {counts_block.get('improving', 0)} improving | {counts_block.get('worsening', 0)} worsening | {counts_block.get('stable', 0)} stable | {counts_block.get('unknown', 0)} unknown
+            </p>
+            <div class="indicator-grid">
+              {''.join(indicator_cards)}
+            </div>
+          </section>
+          """
+        )
+
+    methodology_items = []
+    for note in platform_payload.get("methodology_notes", []):
+        methodology_items.append(f"<li>{html.escape(str(note))}</li>")
+
+    methodology_html = ""
+    if methodology_items:
+        methodology_html = (
+            '<section class="methodology"><h3>Methodology and Source Notes</h3><ul>'
+            + "".join(methodology_items)
+            + "</ul></section>"
+        )
+
+    return f"""
+    <section class="platform-dashboard">
+      <h2>Expanded Tennessee Indicator Monitor</h2>
+      <p class="platform-intro">This dashboard highlights what changed, why it matters, and how reliable the source stream is.</p>
+      {summary_cards}
+      {''.join(category_sections)}
+      {methodology_html}
+    </section>
+    """
+
+
+def markdown_to_basic_html(markdown_text: str, title: str, platform_payload: Optional[dict] = None) -> str:
     body_html = _markdown_body_to_html(markdown_text)
+    dashboard_html = _render_platform_dashboard(platform_payload)
     today = _pretty_date(date.today())
     return f"""<!doctype html>
 <html lang=\"en\">
@@ -171,6 +330,91 @@ def markdown_to_basic_html(markdown_text: str, title: str) -> str:
     .card p {{ margin: 0.45rem 0; line-height: 1.6; }}
     .brief-list {{ margin: 0.35rem 0 0.8rem; padding-left: 1.1rem; }}
     .brief-list li {{ margin: 0.36rem 0; line-height: 1.55; }}
+    .platform-dashboard {{
+      margin-bottom: 1rem;
+      border: 1px solid var(--line);
+      background: #fdfefe;
+      border-radius: 14px;
+      padding: 1rem;
+      animation: rise .52s ease-out;
+    }}
+    .platform-dashboard h2 {{
+      margin: 0;
+      font-family: 'Fraunces', serif;
+      font-size: 1.2rem;
+    }}
+    .platform-intro {{ color: var(--muted); margin: 0.45rem 0 0.8rem; }}
+    .platform-summary {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.7rem;
+      margin-bottom: 0.9rem;
+    }}
+    .summary-card {{
+      border: 1px solid #dbe7f3;
+      background: #f8fbff;
+      border-radius: 11px;
+      padding: 0.7rem;
+    }}
+    .summary-kicker {{ font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b; }}
+    .summary-value {{ font-weight: 700; margin-top: 0.2rem; }}
+    .summary-sub {{ font-size: 0.86rem; color: #475569; margin-top: 0.12rem; }}
+    .category-section {{
+      border-top: 1px solid #e2e8f0;
+      padding-top: 0.9rem;
+      margin-top: 0.8rem;
+    }}
+    .category-head {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+    }}
+    .category-head h3 {{ margin: 0; font-size: 1rem; }}
+    .category-signal {{
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      padding: 0.2rem 0.55rem;
+      color: #334155;
+      font-weight: 600;
+    }}
+    .category-stats {{ margin: 0.35rem 0 0.7rem; color: #64748b; font-size: 0.88rem; }}
+    .indicator-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 0.65rem;
+    }}
+    .indicator-card {{
+      border: 1px solid #dbe7f3;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 0.65rem;
+    }}
+    .indicator-card.strength-watch {{ border-color: #fdba74; background: #fffbeb; }}
+    .indicator-card.strength-elevated {{ border-color: #fca5a5; background: #fef2f2; }}
+    .indicator-top {{ display: flex; justify-content: space-between; gap: 0.5rem; align-items: start; }}
+    .indicator-top h4 {{ margin: 0; font-size: 0.93rem; line-height: 1.35; }}
+    .direction-tag {{ font-size: 0.74rem; color: #475569; text-transform: uppercase; letter-spacing: 0.03em; }}
+    .indicator-values {{ margin-top: 0.35rem; font-size: 0.86rem; color: #334155; }}
+    .latest strong {{ color: #0f172a; }}
+    .trend-sparkline svg {{ width: 100%; height: 34px; display: block; margin-top: 0.2rem; }}
+    .indicator-note {{ margin: 0.3rem 0; font-size: 0.82rem; color: #475569; line-height: 1.4; }}
+    .indicator-source {{ margin: 0; font-size: 0.8rem; color: #64748b; }}
+    .indicator-source a {{ color: #0b3a5e; text-decoration: none; border-bottom: 1px solid transparent; }}
+    .indicator-source a:hover {{ border-bottom-color: #0b3a5e; }}
+    .methodology {{
+      border-top: 1px solid #e2e8f0;
+      margin-top: 0.9rem;
+      padding-top: 0.8rem;
+    }}
+    .methodology h3 {{ margin: 0 0 0.45rem; font-size: 0.98rem; }}
+    .methodology ul {{ margin: 0; padding-left: 1rem; }}
+    .methodology li {{ margin: 0.25rem 0; font-size: 0.86rem; color: #334155; line-height: 1.45; }}
     .footer {{
       margin-top: 1rem;
       border: 1px solid var(--line);
@@ -231,6 +475,7 @@ def markdown_to_basic_html(markdown_text: str, title: str) -> str:
     @media (max-width: 640px) {{
       .wrap {{ padding: 0.9rem 0.75rem 1.4rem; }}
       .card {{ padding: 0.95rem; }}
+      .platform-summary {{ grid-template-columns: 1fr; }}
       .footer {{ padding: 0.75rem; }}
       .footer-top {{ margin-bottom: 0.45rem; }}
     }}
@@ -247,6 +492,7 @@ def markdown_to_basic_html(markdown_text: str, title: str) -> str:
         <a class=\"chip\" href=\"../index.html\">Back to Archive</a>
       </div>
     </section>
+    {dashboard_html}
     <div class=\"card\">
       {body_html}
     </div>
@@ -277,6 +523,7 @@ def save_brief(
     brief_markdown: str,
     snapshots: List[IndicatorSnapshot],
     flags: List[WarningFlag],
+    platform_payload: Optional[dict] = None,
 ) -> Dict[str, Path]:
     output_dir.mkdir(parents=True, exist_ok=True)
     (site_dir / "briefs").mkdir(parents=True, exist_ok=True)
@@ -297,11 +544,15 @@ def save_brief(
         "brief_markdown": brief_markdown,
         "snapshots": [asdict(item) for item in snapshots],
         "flags": [asdict(item) for item in flags],
+        "platform": platform_payload,
     }
 
     json_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     md_path.write_text(brief_markdown, encoding="utf-8")
-    html_path.write_text(markdown_to_basic_html(brief_markdown, f"Daily Brief {today}"), encoding="utf-8")
+    html_path.write_text(
+        markdown_to_basic_html(brief_markdown, f"Daily Brief {today}", platform_payload=platform_payload),
+        encoding="utf-8",
+    )
 
     return {
         "json": json_path,

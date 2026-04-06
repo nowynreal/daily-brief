@@ -10,6 +10,7 @@ from daily_brief.analysis.rules import build_warning_flags, signal_environment, 
 from daily_brief.collectors.fred_collector import fetch_snapshots
 from daily_brief.config.settings import DEFAULT_INDICATORS, load_settings, validate_settings
 from daily_brief.models import IndicatorSnapshot, WarningFlag
+from daily_brief.platform.pipeline import run_indicator_pipeline
 from daily_brief.services.emailer import send_ready_email
 from daily_brief.services.storage import append_history, render_index, save_brief
 
@@ -44,6 +45,45 @@ def _build_review_url(base_review_url: str, brief_date_iso: str) -> str:
     if base.endswith("/briefs"):
         return f"{base}/{brief_date_iso}.html"
     return f"{base.rstrip('/')}/briefs/{brief_date_iso}.html"
+
+
+def _build_platform_summary_markdown(platform_payload: dict) -> str:
+    lines = [
+        "## Platform Highlights",
+        f"- Expanded signal environment: {platform_payload.get('signal_environment', 'Unknown')}",
+        f"- Expanded signal score: {platform_payload.get('signal_score', 0)}",
+    ]
+
+    counts = platform_payload.get("headline_counts", {})
+    lines.append(
+        "- Indicator directions: "
+        + f"{counts.get('improving', 0)} improving, "
+        + f"{counts.get('worsening', 0)} worsening, "
+        + f"{counts.get('stable', 0)} stable, "
+        + f"{counts.get('unknown', 0)} unknown"
+    )
+
+    lines.extend(["", "## Category Snapshot"])
+    for category in platform_payload.get("categories", []):
+        category_name = category.get("category", "Unknown category")
+        signal = category.get("signal", "stable")
+        cat_counts = category.get("counts", {})
+        lines.append(
+            "- "
+            + f"{category_name}: signal={signal}; "
+            + f"improving={cat_counts.get('improving', 0)}, "
+            + f"worsening={cat_counts.get('worsening', 0)}, "
+            + f"stable={cat_counts.get('stable', 0)}, "
+            + f"unknown={cat_counts.get('unknown', 0)}"
+        )
+
+    methods = platform_payload.get("source_summary", {}).get("by_collection_method", {})
+    if methods:
+        lines.extend(["", "## Source Methods"])
+        for method, count in sorted(methods.items()):
+            lines.append(f"- {method}: {count} indicator(s)")
+
+    return "\n".join(lines)
 
 
 def build_brief_markdown(region_name: str, snapshots: List[IndicatorSnapshot], flags: List[WarningFlag]) -> str:
@@ -132,6 +172,19 @@ def main() -> int:
         validate_settings(settings)
         snapshots = fetch_snapshots(DEFAULT_INDICATORS, settings.fred_api_key)
         flags = build_warning_flags(snapshots)
+
+        platform_payload = None
+        try:
+            platform_payload = run_indicator_pipeline(
+                output_dir=settings.output_dir,
+                fred_api_key=settings.fred_api_key,
+                geography=settings.region_name,
+                registry_path=settings.indicator_registry_path,
+                db_path=settings.indicator_db_path,
+            )
+        except Exception as platform_exc:
+            print(f"WARN: indicator platform pipeline failed; continuing legacy flow. {platform_exc}")
+
         if settings.use_llm:
             brief_markdown = build_llm_brief_markdown(
                 settings.region_name,
@@ -143,6 +196,9 @@ def main() -> int:
         else:
             brief_markdown = build_brief_markdown(settings.region_name, snapshots, flags)
 
+        if platform_payload:
+            brief_markdown = brief_markdown + "\n\n" + _build_platform_summary_markdown(platform_payload)
+
         paths = save_brief(
             settings.output_dir,
             settings.site_dir,
@@ -150,6 +206,7 @@ def main() -> int:
             brief_markdown,
             snapshots,
             flags,
+            platform_payload=platform_payload,
         )
 
         alert_count = len([f for f in flags if f.score > 0])
@@ -184,6 +241,11 @@ def main() -> int:
         print(f"- JSON: {paths['json']}")
         print(f"- HTML: {paths['html']}")
         print(f"- Index: {index_path}")
+        if platform_payload:
+            platform_artifacts = platform_payload.get("artifacts", {})
+            print(f"- Platform normalized data: {platform_artifacts.get('normalized', 'NA')}")
+            print(f"- Platform raw data: {platform_artifacts.get('raw', 'NA')}")
+            print(f"- Platform SQLite: {platform_artifacts.get('sqlite', 'NA')}")
         if settings.send_email:
             print("- Notification email sent.")
         else:

@@ -1,0 +1,337 @@
+{
+  "registry_version": "2026-04-06",
+  "default_geography": "Tennessee",
+  "indicators": [
+    {
+      "id": "tn_unemployment_rate",
+      "title": "Tennessee Unemployment Rate",
+      "category": "Labor Market Indicators",
+      "geography": "Tennessee",
+      "frequency": "monthly",
+      "units": "percent",
+      "source_type": "official_dataset_api",
+      "source_name": "FRED",
+      "source_url": "https://fred.stlouisfed.org/series/TNUR",
+      "collection_method": "fred_api",
+      "economic_signal": "higher_is_worse",
+      "interpretation": "Rising unemployment suggests labor market softening.",
+      "active": true,
+      "transform_rules": {
+        "signal_metric": "abs_change",
+        "watch_threshold": 0.15,
+        "alert_threshold": 0.3,
+        "max_trend_points": 12
+      },
+      "display_priority": 10,
+      "source_params": {
+        "series_id": "TNUR",
+        "limit": 18
+      },
+      "phase": "phase_1"
+    },
+    {
+      "id": "tn_nonfarm_employment",
+      "title": "Tennessee Nonfarm Employment",
+      "category": "Labor Market Indicators",
+      "geography": "Tennessee",
+      "frequency": "monthly",
+      "units": "thousands",
+      "source_type": "official_dataset_api",
+      "source_name": "FRED",
+      "source_url": "https://fred.stlouisfed.org/series/TNNA",
+      "collection_method": "fred_api",
+      "economic_signal": "higher_is_better",
+      "interpretation": "Sustained job growth supports household income and spending.",
+      "active": true,
+      "transform_rules": {
+        "signal_metric": "abs_change",
+        "watch_threshold": 4.0,
+        "alert_threshold": 10.0,
+        "max_trend_points": 12
+      },
+      "display_priority": 11,
+      "source_params": {
+        "series_id": "TNNA",
+        "limit": 18
+      },
+      "phase": "phase_1"
+    },
+    {
+      "id": "us_initial_jobless_claims",
+      "title": "US Initial Jobless Claims",
+      "category": "Labor Market Indicators",
+      "geography": "United States",
+      "frequency": "weekly",
+      "units": "count",
+      "source_type": "official_dataset_api",
+      "source_name": "FRED",
+      "source_url": "https://fred.stlouisfed.org/series/ICSA",
+      "collection_method": "fred_api",
+      "economic_signal": "higher_is_worse",
+      "interpretation": "Claims spikes can flag broad labor market stress before monthly reports.",
+      "active": true,
+      "transform_rules": {
+        "signal_metric": "pct_change",
+        "watch_threshold": 5.0,
+        "alert_threshold": 10.0,
+        "max_trend_points": 16
+      },
+      "display_priority": 12,
+      "source_params": {
+        "series_id": "ICSA",
+        "limit": 24
+      },
+      "phase": "phase_1"
+    },
+    {
+      "id": "us_cpi",
+      "title": "US CPI",
+      "category": "Consumer Activity Indicators",
+      "geography": "United States",
+      "frequency": "monthly",
+      "units": "index",
+      "source_type": "official_dataset_api",
+      "source_name": "FRED",
+      "source_url": "https://fred.stlouisfed.org/series/CPIAUCSL",
+      "collection_method": "fred_api",
+      "economic_signal": "higher_is_worse",
+      "interpretation": "Higher inflation can pressure real consumer purchasing power.",
+      "active": true,
+      "transform_rules": {
+        "signal_metric": "pct_change",
+        "watch_threshold": 0.4,
+        "alert_threshold": 0.7,
+        "max_trend_points": 14
+      },
+      "display_priority": 20,
+      "source_params": {
+        "series_id": "CPIAUCSL",
+        "limit": 18
+      },
+      "phase": "phase_1"
+    },
+    {
+      "id": "us_retail_sales",
+      "title": "US Retail and Food Services Sales",
+      "category": "Consumer Activity Indicators",
+      "geography": "United States",
+      "frequency": "monthly",
+      "units": "million_usd",
+      "source_type": "official_dataset_api",
+      "source_name": "FRED",
+      "source_url": "https://fred.stlouisfed.org/series/RSXFS",
+      "collection_method": "fred_api",
+      "economic_signal": "higher_is_better",
+      "interpretation": "Retail sales trends are a practical proxy for consumer demand.",
+      "active": true,
+      "transform_rules": {
+        "signal_metric": "pct_change",
+        "watch_threshold": 0.8,
+        "alert_threshold": 2.0,
+        "max_trend_points": 14
+      },
+      "display_priority": 21,
+      "source_params": {
+        "series_id": "RSXFS",
+        "limit": 18
+      },
+      "phase": "phase_1"
+    },
+    {
+      "id": "us_industrial_production",
+      "title": "US Industrial Production Index",
+      "category": "Business Activity Indicators",
+      "geography": "United States",
+      "frequency": "monthly",
+      "units": "index",
+      "source_type": "official_dataset_api",
+      "source_name": "FRED",
+      "source_url": "https://fred.stlouisfed.org/series/INDPRO",
+      "collection_method": "fred_api",
+      "economic_signal": "higher_is_better",
+      "interpretation": "Production momentum often tracks the broader business cycle.",
+      "active": true,
+      "transform_rules": {
+        "signal_metric": "pct_change",
+        "watch_threshold": 0.7,
+        "alert_threshold": 1.5,
+        "max_trend_points": 14
+      },
+      "display_priority": 30,
+      "source_params": {
+        "series_id": "INDPRO",
+        "limit": 18
+      },
+      "phase": "phase_1"
+    },
+    {
+      "id": "mortgage_30y_rate",
+      "title": "30-Year Fixed Mortgage Rate",
+      "category": "Housing Market Indicators",
+      "geography": "United States",
+      "frequency": "weekly",
+      "units": "percent",
+      "source_type": "official_dataset_api",
+      "source_name": "FRED",
+      "source_url": "https://fred.stlouisfed.org/series/MORTGAGE30US",
+      "collection_method": "fred_api",
+      "economic_signal": "higher_is_worse",
+      "interpretation": "Mortgage rates influence affordability and housing demand.",
+      "active": true,
+      "transform_rules": {
+        "signal_metric": "abs_change",
+        "watch_threshold": 0.12,
+        "alert_threshold": 0.25,
+        "max_trend_points": 16
+      },
+      "display_priority": 40,
+      "source_params": {
+        "series_id": "MORTGAGE30US",
+        "limit": 24
+      },
+      "phase": "phase_1"
+    },
+    {
+      "id": "us_regular_gas_price",
+      "title": "US Regular Gasoline Price",
+      "category": "Transportation / Travel Indicators",
+      "geography": "United States",
+      "frequency": "weekly",
+      "units": "usd_per_gallon",
+      "source_type": "official_dataset_api",
+      "source_name": "FRED",
+      "source_url": "https://fred.stlouisfed.org/series/GASREGW",
+      "collection_method": "fred_api",
+      "economic_signal": "higher_is_worse",
+      "interpretation": "Fuel cost shifts affect logistics, commuting, and travel spending.",
+      "active": true,
+      "transform_rules": {
+        "signal_metric": "abs_change",
+        "watch_threshold": 0.08,
+        "alert_threshold": 0.2,
+        "max_trend_points": 16
+      },
+      "display_priority": 50,
+      "source_params": {
+        "series_id": "GASREGW",
+        "limit": 24
+      },
+      "phase": "phase_1"
+    },
+    {
+      "id": "tn_online_job_postings",
+      "title": "Tennessee Online Job Postings",
+      "category": "Labor Market Indicators",
+      "geography": "Tennessee",
+      "frequency": "weekly",
+      "units": "count",
+      "source_type": "structured_api",
+      "source_name": "Partner Labor Analytics API",
+      "source_url": "https://example.com/labor-api",
+      "collection_method": "external_api_partner",
+      "economic_signal": "higher_is_better",
+      "interpretation": "High-frequency labor demand proxy; use after source licensing and QA are confirmed.",
+      "active": false,
+      "transform_rules": {
+        "signal_metric": "pct_change",
+        "watch_threshold": 7.0,
+        "alert_threshold": 15.0
+      },
+      "display_priority": 60,
+      "source_params": {},
+      "phase": "phase_2"
+    },
+    {
+      "id": "tn_apartment_rent_listings",
+      "title": "Tennessee Apartment Rent Listings",
+      "category": "Housing Market Indicators",
+      "geography": "Tennessee",
+      "frequency": "weekly",
+      "units": "usd",
+      "source_type": "controlled_scrape",
+      "source_name": "Rental listing platforms",
+      "source_url": "https://example.com/rent-listings",
+      "collection_method": "controlled_scrape",
+      "economic_signal": "higher_is_worse",
+      "interpretation": "Useful but scrape-dependent and sensitive to policy changes; defer until legal and anti-block controls are established.",
+      "active": false,
+      "transform_rules": {
+        "signal_metric": "pct_change",
+        "watch_threshold": 2.0,
+        "alert_threshold": 5.0
+      },
+      "display_priority": 61,
+      "source_params": {},
+      "phase": "phase_2"
+    },
+    {
+      "id": "tn_freight_load_postings",
+      "title": "Tennessee Freight Load Postings",
+      "category": "Transportation / Travel Indicators",
+      "geography": "Tennessee",
+      "frequency": "daily",
+      "units": "count",
+      "source_type": "partner_api",
+      "source_name": "Freight marketplace API",
+      "source_url": "https://example.com/freight-api",
+      "collection_method": "external_api_partner",
+      "economic_signal": "higher_is_better",
+      "interpretation": "Potentially informative but often expensive and license-bound; evaluate only with partner access.",
+      "active": false,
+      "transform_rules": {
+        "signal_metric": "pct_change",
+        "watch_threshold": 8.0,
+        "alert_threshold": 16.0
+      },
+      "display_priority": 62,
+      "source_params": {},
+      "phase": "phase_2"
+    },
+    {
+      "id": "tn_restaurant_activity",
+      "title": "Tennessee Restaurant Activity Proxy",
+      "category": "Consumer Activity Indicators",
+      "geography": "Tennessee",
+      "frequency": "daily",
+      "units": "index",
+      "source_type": "alternative_dataset",
+      "source_name": "Mobility and reservation datasets",
+      "source_url": "https://example.com/restaurant-proxy",
+      "collection_method": "external_api_partner",
+      "economic_signal": "higher_is_better",
+      "interpretation": "Potential signal for consumer foot traffic, but source continuity can be unstable.",
+      "active": false,
+      "transform_rules": {
+        "signal_metric": "pct_change",
+        "watch_threshold": 5.0,
+        "alert_threshold": 12.0
+      },
+      "display_priority": 63,
+      "source_params": {},
+      "phase": "phase_2"
+    },
+    {
+      "id": "tn_small_business_closures",
+      "title": "Tennessee Small Business Closures Signal",
+      "category": "Business Activity Indicators",
+      "geography": "Tennessee",
+      "frequency": "monthly",
+      "units": "count",
+      "source_type": "deferred",
+      "source_name": "Mixed records and private data",
+      "source_url": "",
+      "collection_method": "manual_review",
+      "economic_signal": "higher_is_worse",
+      "interpretation": "Deferred because robust statewide closure data is fragmented and expensive to maintain reliably.",
+      "active": false,
+      "transform_rules": {
+        "signal_metric": "abs_change",
+        "watch_threshold": 20,
+        "alert_threshold": 40
+      },
+      "display_priority": 90,
+      "source_params": {},
+      "phase": "defer"
+    }
+  ]
+}
