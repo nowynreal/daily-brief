@@ -95,21 +95,41 @@
       font-size: 1.2rem;
     }
     .platform-intro { color: var(--muted); margin: 0.45rem 0 0.8rem; }
-    .platform-summary {
+    .category-overview {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 0.7rem;
       margin-bottom: 0.9rem;
     }
-    .summary-card {
+    .category-card {
       border: 1px solid #dbe7f3;
       background: #f8fbff;
       border-radius: 11px;
       padding: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
     }
     .summary-kicker { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b; }
     .summary-value { font-weight: 700; margin-top: 0.2rem; }
     .summary-sub { font-size: 0.86rem; color: #475569; margin-top: 0.12rem; }
+    .status-pill {
+      display: inline-block;
+      width: fit-content;
+      margin-top: 0.35rem;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      padding: 0.18rem 0.55rem;
+      font-weight: 700;
+      color: #334155;
+    }
+    .status-pill.improving { border-color: #86efac; background: #ecfdf3; color: #166534; }
+    .status-pill.weakening { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+    .status-pill.stable { border-color: #cbd5e1; background: #f8fafc; color: #334155; }
     .category-section {
       border-top: 1px solid #e2e8f0;
       padding-top: 0.9rem;
@@ -134,6 +154,9 @@
       color: #334155;
       font-weight: 600;
     }
+    .category-signal.improving { border-color: #86efac; background: #ecfdf3; color: #166534; }
+    .category-signal.weakening { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+    .category-signal.stable { border-color: #cbd5e1; background: #f8fafc; color: #334155; }
     .category-stats { margin: 0.35rem 0 0.7rem; color: #64748b; font-size: 0.88rem; }
     .indicator-grid {
       display: grid;
@@ -153,6 +176,24 @@
     .direction-tag { font-size: 0.74rem; color: #475569; text-transform: uppercase; letter-spacing: 0.03em; }
     .indicator-values { margin-top: 0.35rem; font-size: 0.86rem; color: #334155; }
     .latest strong { color: #0f172a; }
+    .change-chip {
+      margin-top: 0.25rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #334155;
+      padding: 0.12rem 0.45rem;
+      width: fit-content;
+    }
+    .change-chip.up { border-color: #86efac; background: #ecfdf3; color: #166534; }
+    .change-chip.down { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+    .change-chip.flat { border-color: #cbd5e1; background: #f8fafc; color: #334155; }
+    .change-chip .arrow { font-size: 0.86rem; line-height: 1; }
     .trend-sparkline svg { width: 100%; height: 34px; display: block; margin-top: 0.2rem; }
     .indicator-note { margin: 0.3rem 0; font-size: 0.82rem; color: #475569; line-height: 1.4; }
     .indicator-source { margin: 0; font-size: 0.8rem; color: #64748b; }
@@ -226,7 +267,7 @@
     @media (max-width: 640px) {
       .wrap { padding: 0.9rem 0.75rem 1.4rem; }
       .card { padding: 0.95rem; }
-      .platform-summary { grid-template-columns: 1fr; }
+      .category-overview { grid-template-columns: 1fr; }
       .footer { padding: 0.75rem; }
       .footer-top { margin-bottom: 0.45rem; }
     }
@@ -246,126 +287,48 @@
     
     <section class="platform-dashboard">
       <h2>Expanded Tennessee Indicator Monitor</h2>
-      <p class="platform-intro">This dashboard highlights what changed, why it matters, and how reliable the source stream is.</p>
+      <p class="platform-intro">Stable to mixed. This dashboard highlights what changed, why it matters, and how reliable each signal is.</p>
+      <section class="category-overview" aria-label="Category status cards">
+            <article class="category-card">
+              <div class="summary-kicker">Labor Market Index</div>
+              <div class="summary-value">Labor Market</div>
+              <div class="summary-sub">Index: -0.05</div>
+              <span class="status-pill stable">Stable</span>
+            </article>
+            
+            <article class="category-card">
+              <div class="summary-kicker">Consumer Activity Index</div>
+              <div class="summary-value">Consumer Activity</div>
+              <div class="summary-sub">Index: +0.06</div>
+              <span class="status-pill stable">Stable</span>
+            </article>
+            
+            <article class="category-card">
+              <div class="summary-kicker">Business Activity Index</div>
+              <div class="summary-value">Business Activity</div>
+              <div class="summary-sub">Index: +0.22</div>
+              <span class="status-pill improving">Improving</span>
+            </article>
+            
+            <article class="category-card">
+              <div class="summary-kicker">Housing Index</div>
+              <div class="summary-value">Housing Market</div>
+              <div class="summary-sub">Index: -0.67</div>
+              <span class="status-pill weakening">Weakening</span>
+            </article>
+            
+            <article class="category-card">
+              <div class="summary-kicker">Transportation / Travel Index</div>
+              <div class="summary-value">Transportation / Travel</div>
+              <div class="summary-sub">Index: -0.36</div>
+              <span class="status-pill weakening">Weakening</span>
+            </article>
+            </section>
       
-      <section class="platform-summary" aria-label="Expanded indicator summary">
-        <div class="summary-card">
-          <div class="summary-kicker">Overall signal</div>
-          <div class="summary-value">Stable to mixed</div>
-          <div class="summary-sub">Score: 1</div>
-        </div>
-        <div class="summary-card">
-          <div class="summary-kicker">Direction mix</div>
-          <div class="summary-value">3 improving</div>
-          <div class="summary-sub">4 worsening, 1 stable</div>
-        </div>
-        <div class="summary-card">
-          <div class="summary-kicker">Data quality</div>
-          <div class="summary-value">0 unknown</div>
-          <div class="summary-sub">Source metadata and methods listed below</div>
-        </div>
-      </section>
-    
-      
           <section class="category-section">
             <div class="category-head">
-              <h3>Business Activity Indicators</h3>
-              <span class="category-signal">stable</span>
-            </div>
-            <p class="category-stats">
-              1 improving | 0 worsening | 0 stable | 0 unknown
-            </p>
-            <div class="indicator-grid">
-              
-              <article class="indicator-card strength-stable">
-                <div class="indicator-top">
-                  <h4>US Industrial Production Index</h4>
-                  <span class="direction-tag">improving</span>
-                </div>
-                <div class="indicator-values">
-                  <div class="latest">Latest: <strong>102.55</strong></div>
-                  <div class="change">Period change: +0.15%</div>
-                </div>
-                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,30.6 10.9,28.9 21.8,32.0 32.7,22.3 43.6,14.4 54.5,19.5 65.5,18.7 76.4,27.4 87.3,24.5 98.2,18.5 109.1,4.9 120.0,2.0" /></svg></div>
-                <p class="indicator-note">Production momentum often tracks the broader business cycle.</p>
-                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/INDPRO" target="_blank" rel="noopener noreferrer">FRED</a></p>
-              </article>
-              
-            </div>
-          </section>
-          
-          <section class="category-section">
-            <div class="category-head">
-              <h3>Consumer Activity Indicators</h3>
-              <span class="category-signal">stable</span>
-            </div>
-            <p class="category-stats">
-              1 improving | 1 worsening | 0 stable | 0 unknown
-            </p>
-            <div class="indicator-grid">
-              
-              <article class="indicator-card strength-stable">
-                <div class="indicator-top">
-                  <h4>US CPI</h4>
-                  <span class="direction-tag">worsening</span>
-                </div>
-                <div class="indicator-values">
-                  <div class="latest">Latest: <strong>327.46</strong></div>
-                  <div class="change">Period change: +0.27%</div>
-                </div>
-                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,32.0 10.9,31.6 21.8,29.6 32.7,28.4 43.6,25.2 54.5,22.4 65.5,18.1 76.4,14.4 87.3,11.2 98.2,7.5 109.1,5.4 120.0,2.0" /></svg></div>
-                <p class="indicator-note">Higher inflation can pressure real consumer purchasing power.</p>
-                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/CPIAUCSL" target="_blank" rel="noopener noreferrer">FRED</a></p>
-              </article>
-              
-              <article class="indicator-card strength-stable">
-                <div class="indicator-top">
-                  <h4>US Retail and Food Services Sales</h4>
-                  <span class="direction-tag">improving</span>
-                </div>
-                <div class="indicator-values">
-                  <div class="latest">Latest: <strong>$638,224M</strong></div>
-                  <div class="change">Period change: +0.63%</div>
-                </div>
-                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,21.5 10.9,23.9 21.8,32.0 32.7,22.9 43.6,16.1 54.5,11.0 65.5,10.7 76.4,12.2 87.3,7.6 98.2,7.0 109.1,7.9 120.0,2.0" /></svg></div>
-                <p class="indicator-note">Retail sales trends are a practical proxy for consumer demand.</p>
-                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/RSXFS" target="_blank" rel="noopener noreferrer">FRED</a></p>
-              </article>
-              
-            </div>
-          </section>
-          
-          <section class="category-section">
-            <div class="category-head">
-              <h3>Housing Market Indicators</h3>
-              <span class="category-signal">stable</span>
-            </div>
-            <p class="category-stats">
-              0 improving | 1 worsening | 0 stable | 0 unknown
-            </p>
-            <div class="indicator-grid">
-              
-              <article class="indicator-card strength-stable">
-                <div class="indicator-top">
-                  <h4>30-Year Fixed Mortgage Rate</h4>
-                  <span class="direction-tag">worsening</span>
-                </div>
-                <div class="indicator-values">
-                  <div class="latest">Latest: <strong>6.46%</strong></div>
-                  <div class="change">Period change: +1.25%</div>
-                </div>
-                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,27.0 10.9,25.1 21.8,24.5 32.7,23.9 43.6,25.1 54.5,30.1 65.5,32.0 76.4,30.8 87.3,23.9 98.2,17.0 109.1,7.0 120.0,2.0" /></svg></div>
-                <p class="indicator-note">Mortgage rates influence affordability and housing demand.</p>
-                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/MORTGAGE30US" target="_blank" rel="noopener noreferrer">FRED</a></p>
-              </article>
-              
-            </div>
-          </section>
-          
-          <section class="category-section">
-            <div class="category-head">
-              <h3>Labor Market Indicators</h3>
-              <span class="category-signal">watch</span>
+              <h3>Labor Market</h3>
+              <span class="category-signal stable">Stable</span>
             </div>
             <p class="category-stats">
               1 improving | 1 worsening | 1 stable | 0 unknown
@@ -380,8 +343,9 @@
                 <div class="indicator-values">
                   <div class="latest">Latest: <strong>3.60%</strong></div>
                   <div class="change">Period change: +0.00%</div>
+                  <div class="change-chip flat"><span class="arrow" aria-hidden="true">&#8594;</span>Flat</div>
                 </div>
-                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,2.0 10.9,2.0 21.8,2.0 32.7,17.0 43.6,32.0 54.5,32.0 65.5,32.0 76.4,17.0 87.3,17.0 98.2,17.0 109.1,17.0 120.0,17.0" /></svg></div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,2.0 9.2,2.0 18.5,2.0 27.7,2.0 36.9,2.0 46.2,17.0 55.4,32.0 64.6,32.0 73.8,32.0 83.1,17.0 92.3,17.0 101.5,17.0 110.8,17.0 120.0,17.0" /></svg></div>
                 <p class="indicator-note">Rising unemployment suggests labor market softening.</p>
                 <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/TNUR" target="_blank" rel="noopener noreferrer">FRED</a></p>
               </article>
@@ -394,8 +358,9 @@
                 <div class="indicator-values">
                   <div class="latest">Latest: <strong>3,408.9k</strong></div>
                   <div class="change">Period change: -0.15%</div>
+                  <div class="change-chip down"><span class="arrow" aria-hidden="true">&#8595;</span>Decrease</div>
                 </div>
-                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,32.0 10.9,24.3 21.8,23.3 32.7,17.7 43.6,17.3 54.5,16.2 65.5,13.5 76.4,6.3 87.3,4.3 98.2,5.1 109.1,2.0 120.0,5.9" /></svg></div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,25.7 9.2,23.3 18.5,32.0 27.7,24.3 36.9,23.3 46.2,17.7 55.4,17.3 64.6,16.2 73.8,13.5 83.1,6.3 92.3,4.3 101.5,5.1 110.8,2.0 120.0,5.9" /></svg></div>
                 <p class="indicator-note">Sustained job growth supports household income and spending.</p>
                 <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/TNNA" target="_blank" rel="noopener noreferrer">FRED</a></p>
               </article>
@@ -408,8 +373,9 @@
                 <div class="indicator-values">
                   <div class="latest">Latest: <strong>202,000</strong></div>
                   <div class="change">Period change: -4.27%</div>
+                  <div class="change-chip down"><span class="arrow" aria-hidden="true">&#8595;</span>Decrease</div>
                 </div>
-                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,32.0 10.9,22.7 21.8,21.7 32.7,2.0 43.6,2.0 54.5,24.8 65.5,21.7 76.4,18.6 87.3,19.6 98.2,27.9 109.1,21.7 120.0,31.0" /></svg></div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,29.9 9.2,25.8 18.5,32.0 27.7,22.7 36.9,21.7 46.2,2.0 55.4,2.0 64.6,24.8 73.8,21.7 83.1,18.6 92.3,19.6 101.5,27.9 110.8,21.7 120.0,31.0" /></svg></div>
                 <p class="indicator-note">Claims spikes can flag broad labor market stress before monthly reports.</p>
                 <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/ICSA" target="_blank" rel="noopener noreferrer">FRED</a></p>
               </article>
@@ -419,8 +385,122 @@
           
           <section class="category-section">
             <div class="category-head">
-              <h3>Transportation / Travel Indicators</h3>
-              <span class="category-signal">stable</span>
+              <h3>Consumer Activity</h3>
+              <span class="category-signal stable">Stable</span>
+            </div>
+            <p class="category-stats">
+              1 improving | 1 worsening | 0 stable | 1 unknown
+            </p>
+            <div class="indicator-grid">
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>US CPI</h4>
+                  <span class="direction-tag">worsening</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>327.46</strong></div>
+                  <div class="change">Period change: +0.27%</div>
+                  <div class="change-chip up"><span class="arrow" aria-hidden="true">&#8593;</span>Increase</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,32.0 9.2,27.9 18.5,25.7 27.7,25.4 36.9,23.8 46.2,22.8 55.4,20.3 64.6,18.1 73.8,14.7 83.1,11.8 92.3,9.3 101.5,6.3 110.8,4.7 120.0,2.0" /></svg></div>
+                <p class="indicator-note">Higher inflation can pressure real consumer purchasing power.</p>
+                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/CPIAUCSL" target="_blank" rel="noopener noreferrer">FRED</a></p>
+              </article>
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>US Retail and Food Services Sales</h4>
+                  <span class="direction-tag">improving</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>$638,224M</strong></div>
+                  <div class="change">Period change: +0.63%</div>
+                  <div class="change-chip up"><span class="arrow" aria-hidden="true">&#8593;</span>Increase</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,32.0 9.2,29.9 18.5,19.0 27.7,21.1 36.9,28.2 46.2,20.3 55.4,14.3 64.6,9.9 73.8,9.6 83.1,10.9 92.3,6.9 101.5,6.4 110.8,7.2 120.0,2.0" /></svg></div>
+                <p class="indicator-note">Retail sales trends are a practical proxy for consumer demand.</p>
+                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/RSXFS" target="_blank" rel="noopener noreferrer">FRED</a></p>
+              </article>
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>Economic Search Intensity Index</h4>
+                  <span class="direction-tag">unknown</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>NA</strong></div>
+                  <div class="change">Period change: No change data</div>
+                  <div class="change-chip flat"><span class="arrow" aria-hidden="true">&#8594;</span>Flat</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"></svg></div>
+                <p class="indicator-note">Rising search intensity for job stress and financial distress terms can indicate weakening household conditions.</p>
+                <p class="indicator-source">Source: <a href="https://trends.google.com/trends/" target="_blank" rel="noopener noreferrer">Google Trends</a></p>
+              </article>
+              
+            </div>
+          </section>
+          
+          <section class="category-section">
+            <div class="category-head">
+              <h3>Business Activity</h3>
+              <span class="category-signal improving">Improving</span>
+            </div>
+            <p class="category-stats">
+              1 improving | 0 worsening | 0 stable | 0 unknown
+            </p>
+            <div class="indicator-grid">
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>US Industrial Production Index</h4>
+                  <span class="direction-tag">improving</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>102.55</strong></div>
+                  <div class="change">Period change: +0.15%</div>
+                  <div class="change-chip up"><span class="arrow" aria-hidden="true">&#8593;</span>Increase</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,32.0 9.2,19.5 18.5,20.2 27.7,19.2 36.9,21.1 46.2,14.9 55.4,9.9 64.6,13.2 73.8,12.7 83.1,18.2 92.3,16.4 101.5,12.5 110.8,3.9 120.0,2.0" /></svg></div>
+                <p class="indicator-note">Production momentum often tracks the broader business cycle.</p>
+                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/INDPRO" target="_blank" rel="noopener noreferrer">FRED</a></p>
+              </article>
+              
+            </div>
+          </section>
+          
+          <section class="category-section">
+            <div class="category-head">
+              <h3>Housing Market</h3>
+              <span class="category-signal weakening">Weakening</span>
+            </div>
+            <p class="category-stats">
+              0 improving | 1 worsening | 0 stable | 0 unknown
+            </p>
+            <div class="indicator-grid">
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>30-Year Fixed Mortgage Rate</h4>
+                  <span class="direction-tag">worsening</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>6.46%</strong></div>
+                  <div class="change">Period change: +1.25%</div>
+                  <div class="change-chip up"><span class="arrow" aria-hidden="true">&#8593;</span>Increase</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,21.4 9.2,20.8 18.5,27.0 27.7,25.1 36.9,24.5 46.2,23.9 55.4,25.1 64.6,30.1 73.8,32.0 83.1,30.8 92.3,23.9 101.5,17.0 110.8,7.0 120.0,2.0" /></svg></div>
+                <p class="indicator-note">Mortgage rates influence affordability and housing demand.</p>
+                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/MORTGAGE30US" target="_blank" rel="noopener noreferrer">FRED</a></p>
+              </article>
+              
+            </div>
+          </section>
+          
+          <section class="category-section">
+            <div class="category-head">
+              <h3>Transportation / Travel</h3>
+              <span class="category-signal weakening">Weakening</span>
             </div>
             <p class="category-stats">
               0 improving | 1 worsening | 0 stable | 0 unknown
@@ -435,8 +515,9 @@
                 <div class="indicator-values">
                   <div class="latest">Latest: <strong>$3.99/gal</strong></div>
                   <div class="change">Period change: +0.73%</div>
+                  <div class="change-chip up"><span class="arrow" aria-hidden="true">&#8593;</span>Increase</div>
                 </div>
-                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,32.0 10.9,31.3 21.8,30.2 32.7,29.8 43.6,29.0 54.5,28.4 65.5,28.1 76.4,26.2 87.3,14.1 98.2,8.7 109.1,2.7 120.0,2.0" /></svg></div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,31.2 9.2,31.6 18.5,32.0 27.7,31.3 36.9,30.2 46.2,29.8 55.4,29.0 64.6,28.4 73.8,28.1 83.1,26.2 92.3,14.1 101.5,8.7 110.8,2.7 120.0,2.0" /></svg></div>
                 <p class="indicator-note">Fuel cost shifts affect logistics, commuting, and travel spending.</p>
                 <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/GASREGW" target="_blank" rel="noopener noreferrer">FRED</a></p>
               </article>
@@ -479,19 +560,20 @@
 <ul class="brief-list">
 <li>Expanded signal environment: Stable to mixed</li>
 <li>Expanded signal score: 1</li>
-<li>Indicator directions: 3 improving, 4 worsening, 1 stable, 0 unknown</li>
+<li>Indicator directions: 3 improving, 4 worsening, 1 stable, 1 unknown</li>
 </ul>
 <h2>Category Snapshot</h2>
 <ul class="brief-list">
-<li>Business Activity Indicators: signal=stable; improving=1, worsening=0, stable=0, unknown=0</li>
-<li>Consumer Activity Indicators: signal=stable; improving=1, worsening=1, stable=0, unknown=0</li>
-<li>Housing Market Indicators: signal=stable; improving=0, worsening=1, stable=0, unknown=0</li>
-<li>Labor Market Indicators: signal=watch; improving=1, worsening=1, stable=1, unknown=0</li>
-<li>Transportation / Travel Indicators: signal=stable; improving=0, worsening=1, stable=0, unknown=0</li>
+<li>Labor Market: signal=stable; improving=1, worsening=1, stable=1, unknown=0</li>
+<li>Consumer Activity: signal=stable; improving=1, worsening=1, stable=0, unknown=1</li>
+<li>Business Activity: signal=improving; improving=1, worsening=0, stable=0, unknown=0</li>
+<li>Housing Market: signal=weakening; improving=0, worsening=1, stable=0, unknown=0</li>
+<li>Transportation / Travel: signal=weakening; improving=0, worsening=1, stable=0, unknown=0</li>
 </ul>
 <h2>Source Methods</h2>
 <ul class="brief-list">
 <li>fred_api: 8 indicator(s)</li>
+<li>google_trends_api: 1 indicator(s)</li>
 </ul>
     </div>
     <footer class="footer">
