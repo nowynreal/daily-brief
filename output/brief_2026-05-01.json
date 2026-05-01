@@ -1,10 +1,10 @@
 {
-  "id": "20260501T124540Z",
+  "id": "20260501T211227Z",
   "date": "2026-05-01",
   "region": "Tennessee",
   "signal_environment": "Stable to mixed",
   "signal_score": 1,
-  "brief_markdown": "# BERC Daily Briefer | May 1, 2026\nPrepared by Semih Yucekan\n\n## Executive Summary\n- Region: Tennessee\n- Audience: Faculty-style morning read\n- Signal environment: Stable to mixed\n- Indicators collected successfully: 4\n- Indicators failed or missing: 2\n\n## Indicator Snapshot\n- US Unemployment Rate (UNRATE): latest 4.30% on 2026-03-01; previous 4.40%; change -0.10%; pct change -2.27%\n- US Initial Jobless Claims (ICSA): latest 189,000 on 2026-04-25; previous 215,000; change -26,000; pct change -12.09%\n- Tennessee Unemployment Rate (TNUR): latest 3.60% on 2026-02-01; previous 3.50%; change 0.10%; pct change 2.86%\n- Tennessee Nonfarm Employment (TNNA): latest NA on NA; previous NA; change NA; pct change NA\n- US CPI (CPIAUCSL): latest 330.29 on 2026-03-01; previous 327.46; change 2.83; pct change 0.87%\n- 30Y Mortgage Rate (MORTGAGE30US): latest NA on NA; previous NA; change NA; pct change NA\n\n## Warning Flags\n- [SIGNAL] Monthly CPI move is elevated.\n\n## Caveats\n- This edition uses deterministic, rule-based summarization.\n\n## Platform Highlights\n- Expanded signal environment: Stable to mixed\n- Expanded signal score: 0\n- Indicator directions: 1 improving, 4 worsening, 0 stable, 4 unknown\n\n## Category Snapshot\n- Labor Market: signal=stable; improving=1, worsening=1, stable=0, unknown=1\n- Consumer Activity: signal=stable; improving=0, worsening=0, stable=0, unknown=3\n- Business Activity: signal=weakening; improving=0, worsening=1, stable=0, unknown=0\n- Housing Market: signal=weakening; improving=0, worsening=1, stable=0, unknown=0\n- Transportation / Travel: signal=weakening; improving=0, worsening=1, stable=0, unknown=0\n\n## Source Methods\n- fred_api: 8 indicator(s)\n- google_trends_api: 1 indicator(s)",
+  "brief_markdown": "# BERC Daily Briefer | May 1, 2026\nPrepared by Semih Yucekan\n\n## Executive Summary\n- Region: Tennessee\n- Audience: Faculty-style morning read\n- Signal environment: Stable to mixed\n- Indicators collected successfully: 6\n- Indicators failed or missing: 0\n\n## Indicator Snapshot\n- US Unemployment Rate (UNRATE): latest 4.30% on 2026-03-01; previous 4.40%; change -0.10%; pct change -2.27%\n- US Initial Jobless Claims (ICSA): latest 189,000 on 2026-04-25; previous 215,000; change -26,000; pct change -12.09%\n- Tennessee Unemployment Rate (TNUR): latest 3.60% on 2026-02-01; previous 3.50%; change 0.10%; pct change 2.86%\n- Tennessee Nonfarm Employment (TNNA): latest 3,366.7 thousand on 2026-02-01; previous 3,375.9 thousand; change -9.2 thousand; pct change -0.27%\n- US CPI (CPIAUCSL): latest 330.29 on 2026-03-01; previous 327.46; change 2.83; pct change 0.87%\n- 30Y Mortgage Rate (MORTGAGE30US): latest 6.30% on 2026-04-30; previous 6.23%; change 0.07%; pct change 1.12%\n\n## Warning Flags\n- [SIGNAL] Monthly CPI move is elevated.\n\n## Caveats\n- This edition uses deterministic, rule-based summarization.\n\n## Platform Highlights\n- Expanded signal environment: Moderate watch\n- Expanded signal score: 3\n- Indicator directions: 2 improving, 6 worsening, 0 stable, 1 unknown\n\n## Category Snapshot\n- Labor Market: signal=weakening; improving=1, worsening=2, stable=0, unknown=0\n- Consumer Activity: signal=stable; improving=1, worsening=1, stable=0, unknown=1\n- Business Activity: signal=weakening; improving=0, worsening=1, stable=0, unknown=0\n- Housing Market: signal=weakening; improving=0, worsening=1, stable=0, unknown=0\n- Transportation / Travel: signal=weakening; improving=0, worsening=1, stable=0, unknown=0\n\n## Source Methods\n- fred_api: 8 indicator(s)\n- google_trends_api: 1 indicator(s)",
   "snapshots": [
     {
       "name": "US Unemployment Rate",
@@ -50,13 +50,13 @@
       "series_id": "TNNA",
       "units": "thousands",
       "frequency": "monthly",
-      "latest_date": "NA",
-      "latest_value": null,
-      "previous_value": null,
-      "abs_change": null,
-      "pct_change": null,
-      "status": "error",
-      "note": "Fetch failed: HTTP Error 500: Internal Server Error"
+      "latest_date": "2026-02-01",
+      "latest_value": 3366.7,
+      "previous_value": 3375.9,
+      "abs_change": -9.200000000000273,
+      "pct_change": -0.27251992061377034,
+      "status": "ok",
+      "note": ""
     },
     {
       "name": "US CPI",
@@ -76,13 +76,13 @@
       "series_id": "MORTGAGE30US",
       "units": "percent",
       "frequency": "weekly",
-      "latest_date": "NA",
-      "latest_value": null,
-      "previous_value": null,
-      "abs_change": null,
-      "pct_change": null,
-      "status": "error",
-      "note": "Fetch failed: HTTP Error 500: Internal Server Error"
+      "latest_date": "2026-04-30",
+      "latest_value": 6.3,
+      "previous_value": 6.23,
+      "abs_change": 0.0699999999999994,
+      "pct_change": 1.1235955056179678,
+      "status": "ok",
+      "note": ""
     }
   ],
   "flags": [
@@ -93,30 +93,30 @@
     }
   ],
   "platform": {
-    "generated_at": "2026-05-01T12:45:37.935226+00:00",
+    "generated_at": "2026-05-01T21:12:24.463846+00:00",
     "run_date": "2026-05-01",
     "geography": "Tennessee",
-    "signal_environment": "Stable to mixed",
-    "signal_score": 0,
+    "signal_environment": "Moderate watch",
+    "signal_score": 3,
     "headline_counts": {
-      "improving": 1,
-      "worsening": 4,
+      "improving": 2,
+      "worsening": 6,
       "stable": 0,
-      "unknown": 4
+      "unknown": 1
     },
     "categories": [
       {
         "category": "Labor Market",
         "index_name": "Labor Market Index",
-        "status": "Stable",
-        "composite_score": 0.167,
-        "signal": "stable",
-        "score": 0,
+        "status": "Weakening",
+        "composite_score": -0.222,
+        "signal": "weakening",
+        "score": 1,
         "counts": {
           "improving": 1,
-          "worsening": 1,
+          "worsening": 2,
           "stable": 0,
-          "unknown": 1
+          "unknown": 0
         },
         "indicator_count": 3,
         "indicators": [
@@ -188,13 +188,13 @@
             "geography": "Tennessee",
             "frequency": "monthly",
             "units": "thousands",
-            "latest_date": "NA",
-            "latest_value": null,
-            "previous_value": null,
-            "abs_change": null,
-            "pct_change": null,
-            "change_arrow": "->",
-            "change_label": "flat",
+            "latest_date": "2026-02-01",
+            "latest_value": 3366.7,
+            "previous_value": 3375.9,
+            "abs_change": -9.200000000000273,
+            "pct_change": -0.27251992061377034,
+            "change_arrow": "v",
+            "change_label": "decrease",
             "trend_dates": [
               "2025-01-01",
               "2025-02-01",
@@ -227,8 +227,8 @@
               3375.9,
               3366.7
             ],
-            "status": "error",
-            "note": "FRED fetch failed: HTTP Error 500: Internal Server Error",
+            "status": "ok",
+            "note": "",
             "source_type": "official_dataset_api",
             "source_name": "FRED",
             "source_url": "https://fred.stlouisfed.org/series/TNNA",
@@ -236,10 +236,10 @@
             "economic_signal": "higher_is_better",
             "interpretation": "Sustained job growth supports household income and spending.",
             "display_priority": 11,
-            "signal_direction": "unknown",
-            "signal_strength": "stable",
-            "signal_score": 0,
-            "normalized_signal": 0.0,
+            "signal_direction": "worsening",
+            "signal_strength": "watch",
+            "signal_score": 1,
+            "normalized_signal": -1.0,
             "reliability": "high"
           },
           {
@@ -309,14 +309,14 @@
         "category": "Consumer Activity",
         "index_name": "Consumer Activity Index",
         "status": "Stable",
-        "composite_score": null,
+        "composite_score": 0.0,
         "signal": "stable",
-        "score": 0,
+        "score": 2,
         "counts": {
-          "improving": 0,
-          "worsening": 0,
+          "improving": 1,
+          "worsening": 1,
           "stable": 0,
-          "unknown": 3
+          "unknown": 1
         },
         "indicator_count": 3,
         "indicators": [
@@ -327,13 +327,13 @@
             "geography": "United States",
             "frequency": "monthly",
             "units": "index",
-            "latest_date": "NA",
-            "latest_value": null,
-            "previous_value": null,
-            "abs_change": null,
-            "pct_change": null,
-            "change_arrow": "->",
-            "change_label": "flat",
+            "latest_date": "2026-03-01",
+            "latest_value": 330.293,
+            "previous_value": 327.46,
+            "abs_change": 2.833000000000027,
+            "pct_change": 0.865143834361457,
+            "change_arrow": "^",
+            "change_label": "increase",
             "trend_dates": [
               "2025-01-01",
               "2025-02-01",
@@ -366,8 +366,8 @@
               327.46,
               330.293
             ],
-            "status": "error",
-            "note": "FRED fetch failed: HTTP Error 500: Internal Server Error",
+            "status": "ok",
+            "note": "",
             "source_type": "official_dataset_api",
             "source_name": "FRED",
             "source_url": "https://fred.stlouisfed.org/series/CPIAUCSL",
@@ -375,10 +375,10 @@
             "economic_signal": "higher_is_worse",
             "interpretation": "Higher inflation can pressure real consumer purchasing power.",
             "display_priority": 20,
-            "signal_direction": "unknown",
-            "signal_strength": "stable",
-            "signal_score": 0,
-            "normalized_signal": 0.0,
+            "signal_direction": "worsening",
+            "signal_strength": "elevated",
+            "signal_score": 2,
+            "normalized_signal": -1.0,
             "reliability": "high"
           },
           {
@@ -388,13 +388,13 @@
             "geography": "United States",
             "frequency": "monthly",
             "units": "million_usd",
-            "latest_date": "NA",
-            "latest_value": null,
-            "previous_value": null,
-            "abs_change": null,
-            "pct_change": null,
-            "change_arrow": "->",
-            "change_label": "flat",
+            "latest_date": "2026-03-01",
+            "latest_value": 651843.0,
+            "previous_value": 639691.0,
+            "abs_change": 12152.0,
+            "pct_change": 1.899667183061822,
+            "change_arrow": "^",
+            "change_label": "increase",
             "trend_dates": [
               "2025-02-01",
               "2025-03-01",
@@ -427,8 +427,8 @@
               639691.0,
               651843.0
             ],
-            "status": "error",
-            "note": "FRED fetch failed: HTTP Error 500: Internal Server Error",
+            "status": "ok",
+            "note": "",
             "source_type": "official_dataset_api",
             "source_name": "FRED",
             "source_url": "https://fred.stlouisfed.org/series/RSXFS",
@@ -436,10 +436,10 @@
             "economic_signal": "higher_is_better",
             "interpretation": "Retail sales trends are a practical proxy for consumer demand.",
             "display_priority": 21,
-            "signal_direction": "unknown",
+            "signal_direction": "improving",
             "signal_strength": "stable",
             "signal_score": 0,
-            "normalized_signal": 0.0,
+            "normalized_signal": 1.0,
             "reliability": "high"
           },
           {
@@ -714,15 +714,15 @@
       {
         "category": "Labor Market",
         "index_name": "Labor Market Index",
-        "status": "Stable",
-        "composite_score": 0.167,
+        "status": "Weakening",
+        "composite_score": -0.222,
         "indicator_count": 3
       },
       {
         "category": "Consumer Activity",
         "index_name": "Consumer Activity Index",
         "status": "Stable",
-        "composite_score": null,
+        "composite_score": 0.0,
         "indicator_count": 3
       },
       {
@@ -816,13 +816,13 @@
         "geography": "Tennessee",
         "frequency": "monthly",
         "units": "thousands",
-        "latest_date": "NA",
-        "latest_value": null,
-        "previous_value": null,
-        "abs_change": null,
-        "pct_change": null,
-        "change_arrow": "->",
-        "change_label": "flat",
+        "latest_date": "2026-02-01",
+        "latest_value": 3366.7,
+        "previous_value": 3375.9,
+        "abs_change": -9.200000000000273,
+        "pct_change": -0.27251992061377034,
+        "change_arrow": "v",
+        "change_label": "decrease",
         "trend_dates": [
           "2025-01-01",
           "2025-02-01",
@@ -855,8 +855,8 @@
           3375.9,
           3366.7
         ],
-        "status": "error",
-        "note": "FRED fetch failed: HTTP Error 500: Internal Server Error",
+        "status": "ok",
+        "note": "",
         "source_type": "official_dataset_api",
         "source_name": "FRED",
         "source_url": "https://fred.stlouisfed.org/series/TNNA",
@@ -864,10 +864,10 @@
         "economic_signal": "higher_is_better",
         "interpretation": "Sustained job growth supports household income and spending.",
         "display_priority": 11,
-        "signal_direction": "unknown",
-        "signal_strength": "stable",
-        "signal_score": 0,
-        "normalized_signal": 0.0,
+        "signal_direction": "worsening",
+        "signal_strength": "watch",
+        "signal_score": 1,
+        "normalized_signal": -1.0,
         "reliability": "high"
       },
       {
@@ -938,13 +938,13 @@
         "geography": "United States",
         "frequency": "monthly",
         "units": "index",
-        "latest_date": "NA",
-        "latest_value": null,
-        "previous_value": null,
-        "abs_change": null,
-        "pct_change": null,
-        "change_arrow": "->",
-        "change_label": "flat",
+        "latest_date": "2026-03-01",
+        "latest_value": 330.293,
+        "previous_value": 327.46,
+        "abs_change": 2.833000000000027,
+        "pct_change": 0.865143834361457,
+        "change_arrow": "^",
+        "change_label": "increase",
         "trend_dates": [
           "2025-01-01",
           "2025-02-01",
@@ -977,8 +977,8 @@
           327.46,
           330.293
         ],
-        "status": "error",
-        "note": "FRED fetch failed: HTTP Error 500: Internal Server Error",
+        "status": "ok",
+        "note": "",
         "source_type": "official_dataset_api",
         "source_name": "FRED",
         "source_url": "https://fred.stlouisfed.org/series/CPIAUCSL",
@@ -986,10 +986,10 @@
         "economic_signal": "higher_is_worse",
         "interpretation": "Higher inflation can pressure real consumer purchasing power.",
         "display_priority": 20,
-        "signal_direction": "unknown",
-        "signal_strength": "stable",
-        "signal_score": 0,
-        "normalized_signal": 0.0,
+        "signal_direction": "worsening",
+        "signal_strength": "elevated",
+        "signal_score": 2,
+        "normalized_signal": -1.0,
         "reliability": "high"
       },
       {
@@ -999,13 +999,13 @@
         "geography": "United States",
         "frequency": "monthly",
         "units": "million_usd",
-        "latest_date": "NA",
-        "latest_value": null,
-        "previous_value": null,
-        "abs_change": null,
-        "pct_change": null,
-        "change_arrow": "->",
-        "change_label": "flat",
+        "latest_date": "2026-03-01",
+        "latest_value": 651843.0,
+        "previous_value": 639691.0,
+        "abs_change": 12152.0,
+        "pct_change": 1.899667183061822,
+        "change_arrow": "^",
+        "change_label": "increase",
         "trend_dates": [
           "2025-02-01",
           "2025-03-01",
@@ -1038,8 +1038,8 @@
           639691.0,
           651843.0
         ],
-        "status": "error",
-        "note": "FRED fetch failed: HTTP Error 500: Internal Server Error",
+        "status": "ok",
+        "note": "",
         "source_type": "official_dataset_api",
         "source_name": "FRED",
         "source_url": "https://fred.stlouisfed.org/series/RSXFS",
@@ -1047,10 +1047,10 @@
         "economic_signal": "higher_is_better",
         "interpretation": "Retail sales trends are a practical proxy for consumer demand.",
         "display_priority": 21,
-        "signal_direction": "unknown",
+        "signal_direction": "improving",
         "signal_strength": "stable",
         "signal_score": 0,
-        "normalized_signal": 0.0,
+        "normalized_signal": 1.0,
         "reliability": "high"
       },
       {
@@ -1297,7 +1297,7 @@
     "counts": {
       "active": 9,
       "inactive": 5,
-      "observations": 107
+      "observations": 160
     }
   }
 }
