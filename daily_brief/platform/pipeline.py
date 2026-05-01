@@ -7,6 +7,7 @@ from typing import Dict, List
 
 from daily_brief.platform.connectors.fred_connector import FredConnector
 from daily_brief.platform.connectors.google_trends_connector import GoogleTrendsConnector
+from daily_brief.platform.connectors.job_postings_connector import JobPostingsConnector
 from daily_brief.platform.models import ConnectorFetchResult, IndicatorSnapshot
 from daily_brief.platform.normalization import normalize_fetch_result
 from daily_brief.platform.registry import list_active_indicators, load_indicator_registry
@@ -51,6 +52,19 @@ def _headline_counts(snapshots: List[IndicatorSnapshot]) -> Dict[str, int]:
     }
 
 
+def _phase_summary(indicators: List[dict]) -> Dict[str, Dict[str, int]]:
+    summary: Dict[str, Dict[str, int]] = {}
+    for item in indicators:
+        phase = str(item.get("phase", "unclassified"))
+        bucket = summary.setdefault(phase, {"active": 0, "inactive": 0, "total": 0})
+        bucket["total"] += 1
+        if bool(item.get("active", True)):
+            bucket["active"] += 1
+        else:
+            bucket["inactive"] += 1
+    return dict(sorted(summary.items()))
+
+
 def run_indicator_pipeline(
     output_dir: Path,
     fred_api_key: str,
@@ -74,6 +88,7 @@ def run_indicator_pipeline(
     if fred_api_key:
         connectors["fred_api"] = FredConnector(api_key=fred_api_key)
     connectors["google_trends_api"] = GoogleTrendsConnector()
+    connectors["job_postings_aggregate"] = JobPostingsConnector()
 
     snapshots: List[IndicatorSnapshot] = []
     normalized_rows = []
@@ -124,10 +139,11 @@ def run_indicator_pipeline(
 
     headline_counts = _headline_counts(snapshots)
     source_summary = _source_summary(snapshot_dicts)
+    phase_summary = _phase_summary(snapshot_dicts)
 
     methodology_notes = [
         "Source priority follows official/public datasets first, then structured APIs, then controlled scraping only when needed.",
-        "Current active Tennessee-first indicators are primarily FRED-backed for reliability and low operational cost.",
+        "Current active Tennessee-first indicators include FRED-backed series plus Google Trends and configurable labor-demand aggregation from online job postings.",
         "Signals are rule-based and deterministic; thresholds are configurable in the indicator registry.",
     ]
 
@@ -160,6 +176,7 @@ def run_indicator_pipeline(
         "signal_environment": signal_environment,
         "signal_score": total_signal_score,
         "headline_counts": headline_counts,
+        "phase_summary": phase_summary,
         "categories": category_summaries,
         "category_indexes": category_indexes,
         "indicators": snapshot_dicts,

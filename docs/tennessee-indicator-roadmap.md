@@ -37,7 +37,10 @@ Why this phase is strongest:
 
 Activate only after licensing, reliability, and maintenance plan are clear.
 
-- Online job postings / labor demand (partner APIs)
+- Online job postings / labor demand:
+	- Indeed job postings (RSS or licensed API)
+	- LinkedIn job postings (approved API/feed access)
+	- State job boards (official board APIs/feeds)
 - Apartment rent listings (controlled scrape or licensed feed)
 - Freight load postings (partner API)
 - Restaurant activity proxies (mobility/reservation datasets)

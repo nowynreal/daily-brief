@@ -42,6 +42,8 @@ The original MVP path remains intact and now runs alongside an expanded Tennesse
 Current active source methods:
 
 - `fred_api`
+- `google_trends_api`
+- `job_postings_aggregate` (Indeed baseline + optional LinkedIn/state board feeds)
 
 Planned methods (not enabled by default):
 
@@ -78,6 +80,8 @@ Optional:
 
 - `SEND_EMAIL=true` and SMTP settings for notifications.
 - `USE_LLM=true` + `OPENAI_API_KEY` for AI-assisted narrative mode.
+- `LINKEDIN_JOB_POSTINGS_URL` + `LINKEDIN_JOB_POSTINGS_AUTH` for LinkedIn labor-demand feed.
+- `STATE_JOB_BOARDS_URL` + `STATE_JOB_BOARDS_API_KEY` for state board labor-demand feed.
 
 ## Planning artifacts
 

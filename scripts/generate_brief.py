@@ -63,6 +63,17 @@ def _build_platform_summary_markdown(platform_payload: dict) -> str:
         + f"{counts.get('unknown', 0)} unknown"
     )
 
+    phase_summary = platform_payload.get("phase_summary", {})
+    if phase_summary:
+        lines.extend(["", "## Roadmap Status"])
+        for phase_name, counts_by_phase in sorted(phase_summary.items()):
+            lines.append(
+                "- "
+                + f"{phase_name}: {counts_by_phase.get('active', 0)} active, "
+                + f"{counts_by_phase.get('inactive', 0)} inactive, "
+                + f"{counts_by_phase.get('total', 0)} total"
+            )
+
     lines.extend(["", "## Category Snapshot"])
     for category in platform_payload.get("categories", []):
         category_name = category.get("category", "Unknown category")

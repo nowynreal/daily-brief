@@ -259,20 +259,60 @@
       "geography": "Tennessee",
       "frequency": "weekly",
       "units": "count",
-      "source_type": "structured_api",
-      "source_name": "Partner Labor Analytics API",
-      "source_url": "https://example.com/labor-api",
-      "collection_method": "external_api_partner",
+      "source_type": "aggregated_online_feeds",
+      "source_name": "Indeed + LinkedIn + State Job Boards",
+      "source_url": "https://www.indeed.com/jobs,https://www.linkedin.com/jobs,https://www.jobs4tn.gov",
+      "collection_method": "job_postings_aggregate",
       "economic_signal": "higher_is_better",
-      "interpretation": "High-frequency labor demand proxy; use after source licensing and QA are confirmed.",
-      "active": false,
+      "interpretation": "Composite labor-demand proxy from online job posting volumes; prioritize policy-safe APIs/feeds and keep source coverage transparent.",
+      "active": true,
       "transform_rules": {
         "signal_metric": "pct_change",
         "watch_threshold": 7.0,
-        "alert_threshold": 15.0
+        "alert_threshold": 15.0,
+        "max_trend_points": 12
       },
       "display_priority": 60,
-      "source_params": {},
+      "source_params": {
+        "window_days": 7,
+        "min_success_sources": 1,
+        "sources": [
+          {
+            "id": "indeed",
+            "name": "Indeed Job Postings",
+            "kind": "rss",
+            "url": "https://www.indeed.com/rss?q=&l=Tennessee",
+            "weight": 1.0,
+            "enabled": true
+          },
+          {
+            "id": "linkedin",
+            "name": "LinkedIn Job Postings",
+            "kind": "json_items",
+            "url_env": "LINKEDIN_JOB_POSTINGS_URL",
+            "items_path": "items",
+            "date_field": "listed_at",
+            "headers_env": {
+              "Authorization": "LINKEDIN_JOB_POSTINGS_AUTH"
+            },
+            "weight": 1.0,
+            "enabled": true
+          },
+          {
+            "id": "state_job_boards",
+            "name": "State Job Boards",
+            "kind": "json_items",
+            "url_env": "STATE_JOB_BOARDS_URL",
+            "items_path": "items",
+            "date_field": "posted_date",
+            "headers_env": {
+              "X-API-Key": "STATE_JOB_BOARDS_API_KEY"
+            },
+            "weight": 1.0,
+            "enabled": true
+          }
+        ]
+      },
       "phase": "phase_2"
     },
     {
