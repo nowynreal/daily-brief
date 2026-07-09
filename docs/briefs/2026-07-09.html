@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Brief 2026-07-09</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+    :root {
+      --bg: #f3f4f6;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --ink: #0f172a;
+      --muted: #475569;
+      --line: #e2e8f0;
+      --accent: #0b3a5e;
+      --accent-soft: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: 'IBM Plex Sans', sans-serif;
+      background:
+        radial-gradient(1100px 560px at 100% -20%, #dde6f3 0%, transparent 62%),
+        linear-gradient(180deg, #f8fafc, var(--bg));
+      min-height: 100vh;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 1.2rem 1rem 2rem; }
+    .hero {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 1rem;
+      animation: rise .45s ease-out;
+    }
+    .hero h1 {
+      margin: 0;
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.6rem, 2.5vw, 2.1rem);
+      letter-spacing: 0.01em;
+    }
+    .hero .accent {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-style: normal;
+      font-size: 0.65em;
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+    .hero p { margin: 0.45rem 0 0; color: var(--muted); }
+    .cta-row { margin-top: 0.8rem; display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .chip {
+      display: inline-block;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.9rem;
+      color: #1e293b;
+      background: var(--accent-soft);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .card {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 1.15rem;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+      animation: rise .55s ease-out;
+    }
+    .card h1 { display: none; }
+    .card h2 {
+      margin: 1.15rem 0 0.6rem;
+      font-size: 1.05rem;
+      color: #0f172a;
+      font-family: 'Fraunces', serif;
+      letter-spacing: 0.01em;
+    }
+    .card p { margin: 0.45rem 0; line-height: 1.6; }
+    .brief-list { margin: 0.35rem 0 0.8rem; padding-left: 1.1rem; }
+    .brief-list li { margin: 0.36rem 0; line-height: 1.55; }
+    .platform-dashboard {
+      margin-bottom: 1rem;
+      border: 1px solid var(--line);
+      background: #fdfefe;
+      border-radius: 14px;
+      padding: 1rem;
+      animation: rise .52s ease-out;
+    }
+    .platform-dashboard h2 {
+      margin: 0;
+      font-family: 'Fraunces', serif;
+      font-size: 1.2rem;
+    }
+    .platform-intro { color: var(--muted); margin: 0.45rem 0 0.8rem; }
+    .category-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.7rem;
+      margin-bottom: 0.9rem;
+    }
+    .category-card {
+      border: 1px solid #dbe7f3;
+      background: #f8fbff;
+      border-radius: 11px;
+      padding: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .summary-kicker { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b; }
+    .summary-value { font-weight: 700; margin-top: 0.2rem; }
+    .summary-sub { font-size: 0.86rem; color: #475569; margin-top: 0.12rem; }
+    .status-pill {
+      display: inline-block;
+      width: fit-content;
+      margin-top: 0.35rem;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      padding: 0.18rem 0.55rem;
+      font-weight: 700;
+      color: #334155;
+    }
+    .status-pill.improving { border-color: #86efac; background: #ecfdf3; color: #166534; }
+    .status-pill.weakening { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+    .status-pill.stable { border-color: #cbd5e1; background: #f8fafc; color: #334155; }
+    .category-section {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 0.9rem;
+      margin-top: 0.8rem;
+    }
+    .category-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+    }
+    .category-head h3 { margin: 0; font-size: 1rem; }
+    .category-signal {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      padding: 0.2rem 0.55rem;
+      color: #334155;
+      font-weight: 600;
+    }
+    .category-signal.improving { border-color: #86efac; background: #ecfdf3; color: #166534; }
+    .category-signal.weakening { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+    .category-signal.stable { border-color: #cbd5e1; background: #f8fafc; color: #334155; }
+    .category-stats { margin: 0.35rem 0 0.7rem; color: #64748b; font-size: 0.88rem; }
+    .indicator-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 0.65rem;
+    }
+    .indicator-card {
+      border: 1px solid #dbe7f3;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 0.65rem;
+    }
+    .indicator-card.strength-watch { border-color: #fdba74; background: #fffbeb; }
+    .indicator-card.strength-elevated { border-color: #fca5a5; background: #fef2f2; }
+    .indicator-top { display: flex; justify-content: space-between; gap: 0.5rem; align-items: start; }
+    .indicator-top h4 { margin: 0; font-size: 0.93rem; line-height: 1.35; }
+    .direction-tag { font-size: 0.74rem; color: #475569; text-transform: uppercase; letter-spacing: 0.03em; }
+    .indicator-values { margin-top: 0.35rem; font-size: 0.86rem; color: #334155; }
+    .latest strong { color: #0f172a; }
+    .change-chip {
+      margin-top: 0.25rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #334155;
+      padding: 0.12rem 0.45rem;
+      width: fit-content;
+    }
+    .change-chip.up { border-color: #86efac; background: #ecfdf3; color: #166534; }
+    .change-chip.down { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+    .change-chip.flat { border-color: #cbd5e1; background: #f8fafc; color: #334155; }
+    .change-chip .arrow { font-size: 0.86rem; line-height: 1; }
+    .trend-sparkline svg { width: 100%; height: 34px; display: block; margin-top: 0.2rem; }
+    .indicator-note { margin: 0.3rem 0; font-size: 0.82rem; color: #475569; line-height: 1.4; }
+    .indicator-source { margin: 0; font-size: 0.8rem; color: #64748b; }
+    .indicator-source a { color: #0b3a5e; text-decoration: none; border-bottom: 1px solid transparent; }
+    .indicator-source a:hover { border-bottom-color: #0b3a5e; }
+    .methodology {
+      border-top: 1px solid #e2e8f0;
+      margin-top: 0.9rem;
+      padding-top: 0.8rem;
+    }
+    .methodology h3 { margin: 0 0 0.45rem; font-size: 0.98rem; }
+    .methodology ul { margin: 0; padding-left: 1rem; }
+    .methodology li { margin: 0.25rem 0; font-size: 0.86rem; color: #334155; line-height: 1.45; }
+    .footer {
+      margin-top: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface-2);
+      padding: 0.9rem;
+    }
+    .footer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.55rem;
+    }
+    .footer-brand { font-size: 0.95rem; color: #334155; }
+    .footer-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+    }
+    .footer-list li {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .footer-list a {
+      color: #0b3a5e;
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 500;
+      border-bottom: 1px solid transparent;
+      transition: color .18s ease, border-color .18s ease, transform .18s ease;
+    }
+    .footer-list a:hover {
+      color: #082a46;
+      border-bottom-color: #0b3a5e;
+      transform: translateY(-1px);
+    }
+    .footer-list a:focus-visible {
+      outline: 2px solid #93c5fd;
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+    .link-icon {
+      color: #64748b;
+      font-size: 0.74rem;
+      line-height: 1;
+    }
+    .footer-note { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 640px) {
+      .wrap { padding: 0.9rem 0.75rem 1.4rem; }
+      .card { padding: 0.95rem; }
+      .category-overview { grid-template-columns: 1fr; }
+      .footer { padding: 0.75rem; }
+      .footer-top { margin-bottom: 0.45rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>BERC Daily Briefer<span class="accent"> by Semih Yucekan</span></h1>
+      
+
+      <p>Edition: July 9, 2026.</p>
+      <div class="cta-row">
+        <a class="chip" href="../index.html">Back to Archive</a>
+      </div>
+    </section>
+    
+    <section class="platform-dashboard">
+      <h2>Expanded Tennessee Indicator Monitor</h2>
+      <p class="platform-intro">Stable to mixed. This dashboard highlights what changed, why it matters, and how reliable each signal is.</p>
+      <section class="category-overview" aria-label="Category status cards">
+            <article class="category-card">
+              <div class="summary-kicker">Labor Market Index</div>
+              <div class="summary-value">Labor Market</div>
+              <div class="summary-sub">Index: +0.40</div>
+              <span class="status-pill improving">Improving</span>
+            </article>
+            
+            <article class="category-card">
+              <div class="summary-kicker">Consumer Activity Index</div>
+              <div class="summary-value">Consumer Activity</div>
+              <div class="summary-sub">Index: +0.00</div>
+              <span class="status-pill stable">Stable</span>
+            </article>
+            
+            <article class="category-card">
+              <div class="summary-kicker">Business Activity Index</div>
+              <div class="summary-value">Business Activity</div>
+              <div class="summary-sub">Index: +0.19</div>
+              <span class="status-pill stable">Stable</span>
+            </article>
+            
+            <article class="category-card">
+              <div class="summary-kicker">Housing Index</div>
+              <div class="summary-value">Housing Market</div>
+              <div class="summary-sub">Index: +0.50</div>
+              <span class="status-pill improving">Improving</span>
+            </article>
+            
+            <article class="category-card">
+              <div class="summary-kicker">Transportation / Travel Index</div>
+              <div class="summary-value">Transportation / Travel</div>
+              <div class="summary-sub">Index: +0.68</div>
+              <span class="status-pill improving">Improving</span>
+            </article>
+            </section>
+      
+          <section class="category-section">
+            <div class="category-head">
+              <h3>Labor Market</h3>
+              <span class="category-signal improving">Improving</span>
+            </div>
+            <p class="category-stats">
+              2 improving | 0 worsening | 1 stable | 1 unknown
+            </p>
+            <div class="indicator-grid">
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>Tennessee Unemployment Rate</h4>
+                  <span class="direction-tag">stable</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>3.60%</strong></div>
+                  <div class="change">Period change: +0.00%</div>
+                  <div class="change-chip flat"><span class="arrow" aria-hidden="true">&#8594;</span>Flat</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,32.0 9.2,32.0 18.5,32.0 27.7,32.0 36.9,32.0 46.2,32.0 55.4,32.0 64.6,2.0 73.8,2.0 83.1,32.0 92.3,2.0 101.5,2.0 110.8,2.0 120.0,2.0" /></svg></div>
+                <p class="indicator-note">Rising unemployment suggests labor market softening.</p>
+                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/TNUR" target="_blank" rel="noopener noreferrer">FRED</a></p>
+              </article>
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>Tennessee Nonfarm Employment</h4>
+                  <span class="direction-tag">improving</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>3,382.2k</strong></div>
+                  <div class="change">Period change: +0.17%</div>
+                  <div class="change-chip up"><span class="arrow" aria-hidden="true">&#8593;</span>Increase</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,10.0 9.2,11.1 18.5,27.3 27.7,23.0 36.9,18.3 46.2,27.6 55.4,32.0 64.6,20.5 73.8,15.7 83.1,9.2 92.3,19.6 101.5,10.3 110.8,8.5 120.0,2.0" /></svg></div>
+                <p class="indicator-note">Sustained job growth supports household income and spending.</p>
+                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/TNNA" target="_blank" rel="noopener noreferrer">FRED</a></p>
+              </article>
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>US Initial Jobless Claims</h4>
+                  <span class="direction-tag">improving</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>215,000</strong></div>
+                  <div class="change">Period change: -0.92%</div>
+                  <div class="change-chip down"><span class="arrow" aria-hidden="true">&#8595;</span>Decrease</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,11.0 9.2,18.5 18.5,13.2 27.7,32.0 36.9,25.2 46.2,15.5 55.4,17.0 64.6,15.5 73.8,5.8 83.1,2.0 92.3,4.2 101.5,12.5 110.8,11.8 120.0,13.2" /></svg></div>
+                <p class="indicator-note">Claims spikes can flag broad labor market stress before monthly reports.</p>
+                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/ICSA" target="_blank" rel="noopener noreferrer">FRED</a></p>
+              </article>
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>Tennessee Online Job Postings</h4>
+                  <span class="direction-tag">unknown</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>NA</strong></div>
+                  <div class="change">Period change: No change data</div>
+                  <div class="change-chip flat"><span class="arrow" aria-hidden="true">&#8594;</span>Flat</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"></svg></div>
+                <p class="indicator-note">Composite labor-demand proxy from online job posting volumes; prioritize policy-safe APIs/feeds and keep source coverage transparent.</p>
+                <p class="indicator-source">Source: <a href="https://www.indeed.com/jobs,https://www.linkedin.com/jobs,https://www.jobs4tn.gov" target="_blank" rel="noopener noreferrer">Indeed + LinkedIn + State Job Boards</a></p>
+              </article>
+              
+            </div>
+          </section>
+          
+          <section class="category-section">
+            <div class="category-head">
+              <h3>Consumer Activity</h3>
+              <span class="category-signal stable">Stable</span>
+            </div>
+            <p class="category-stats">
+              1 improving | 1 worsening | 0 stable | 1 unknown
+            </p>
+            <div class="indicator-grid">
+              
+              <article class="indicator-card strength-watch">
+                <div class="indicator-top">
+                  <h4>US CPI</h4>
+                  <span class="direction-tag">worsening</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>333.98</strong></div>
+                  <div class="change">Period change: +0.47%</div>
+                  <div class="change-chip up"><span class="arrow" aria-hidden="true">&#8593;</span>Increase</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,32.0 9.2,30.9 18.5,30.2 27.7,28.5 36.9,27.0 46.2,24.6 55.4,22.6 64.6,20.8 73.8,18.8 83.1,17.6 92.3,15.8 101.5,9.8 110.8,5.3 120.0,2.0" /></svg></div>
+                <p class="indicator-note">Higher inflation can pressure real consumer purchasing power.</p>
+                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/CPIAUCSL" target="_blank" rel="noopener noreferrer">FRED</a></p>
+              </article>
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>US Retail and Food Services Sales</h4>
+                  <span class="direction-tag">improving</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>$662,752M</strong></div>
+                  <div class="change">Period change: +1.04%</div>
+                  <div class="change-chip up"><span class="arrow" aria-hidden="true">&#8593;</span>Increase</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,26.8 9.2,32.0 18.5,26.9 27.7,23.9 36.9,21.7 46.2,21.6 55.4,22.3 64.6,20.2 73.8,20.0 83.1,19.9 92.3,16.0 101.5,7.8 110.8,6.4 120.0,2.0" /></svg></div>
+                <p class="indicator-note">Retail sales trends are a practical proxy for consumer demand.</p>
+                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/RSXFS" target="_blank" rel="noopener noreferrer">FRED</a></p>
+              </article>
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>Economic Search Intensity Index</h4>
+                  <span class="direction-tag">unknown</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>NA</strong></div>
+                  <div class="change">Period change: No change data</div>
+                  <div class="change-chip flat"><span class="arrow" aria-hidden="true">&#8594;</span>Flat</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"></svg></div>
+                <p class="indicator-note">Rising search intensity for job stress and financial distress terms can indicate weakening household conditions.</p>
+                <p class="indicator-source">Source: <a href="https://trends.google.com/trends/" target="_blank" rel="noopener noreferrer">Google Trends</a></p>
+              </article>
+              
+            </div>
+          </section>
+          
+          <section class="category-section">
+            <div class="category-head">
+              <h3>Business Activity</h3>
+              <span class="category-signal stable">Stable</span>
+            </div>
+            <p class="category-stats">
+              1 improving | 0 worsening | 0 stable | 0 unknown
+            </p>
+            <div class="indicator-grid">
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>US Industrial Production Index</h4>
+                  <span class="direction-tag">improving</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>102.65</strong></div>
+                  <div class="change">Period change: +0.14%</div>
+                  <div class="change-chip up"><span class="arrow" aria-hidden="true">&#8593;</span>Increase</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,29.1 9.2,32.0 18.5,22.9 27.7,15.4 36.9,20.2 46.2,19.5 55.4,27.5 64.6,30.8 73.8,22.6 83.1,29.2 92.3,14.5 101.5,20.2 110.8,4.5 120.0,2.0" /></svg></div>
+                <p class="indicator-note">Production momentum often tracks the broader business cycle.</p>
+                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/INDPRO" target="_blank" rel="noopener noreferrer">FRED</a></p>
+              </article>
+              
+            </div>
+          </section>
+          
+          <section class="category-section">
+            <div class="category-head">
+              <h3>Housing Market</h3>
+              <span class="category-signal improving">Improving</span>
+            </div>
+            <p class="category-stats">
+              1 improving | 0 worsening | 0 stable | 0 unknown
+            </p>
+            <div class="indicator-grid">
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>30-Year Fixed Mortgage Rate</h4>
+                  <span class="direction-tag">improving</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>6.43%</strong></div>
+                  <div class="change">Period change: -0.92%</div>
+                  <div class="change-chip down"><span class="arrow" aria-hidden="true">&#8595;</span>Decrease</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,9.0 9.2,18.0 18.5,25.0 27.7,32.0 36.9,25.0 46.2,18.0 55.4,19.0 64.6,4.0 73.8,2.0 83.1,7.0 92.3,3.0 101.5,8.0 110.8,6.0 120.0,12.0" /></svg></div>
+                <p class="indicator-note">Mortgage rates influence affordability and housing demand.</p>
+                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/MORTGAGE30US" target="_blank" rel="noopener noreferrer">FRED</a></p>
+              </article>
+              
+            </div>
+          </section>
+          
+          <section class="category-section">
+            <div class="category-head">
+              <h3>Transportation / Travel</h3>
+              <span class="category-signal improving">Improving</span>
+            </div>
+            <p class="category-stats">
+              1 improving | 0 worsening | 0 stable | 0 unknown
+            </p>
+            <div class="indicator-grid">
+              
+              <article class="indicator-card strength-stable">
+                <div class="indicator-top">
+                  <h4>US Regular Gasoline Price</h4>
+                  <span class="direction-tag">improving</span>
+                </div>
+                <div class="indicator-values">
+                  <div class="latest">Latest: <strong>$3.78/gal</strong></div>
+                  <div class="change">Period change: -1.41%</div>
+                  <div class="change-chip down"><span class="arrow" aria-hidden="true">&#8595;</span>Decrease</div>
+                </div>
+                <div class="trend-sparkline"><svg viewBox="0 0 120 34" aria-hidden="true"><polyline fill="none" stroke="#0b3a5e" stroke-width="2" points="0.0,17.8 9.2,17.6 18.5,20.9 27.7,17.6 36.9,4.0 46.2,2.0 55.4,2.4 64.6,3.0 73.8,10.1 83.1,16.7 92.3,20.6 101.5,26.3 110.8,29.8 120.0,32.0" /></svg></div>
+                <p class="indicator-note">Fuel cost shifts affect logistics, commuting, and travel spending.</p>
+                <p class="indicator-source">Source: <a href="https://fred.stlouisfed.org/series/GASREGW" target="_blank" rel="noopener noreferrer">FRED</a></p>
+              </article>
+              
+            </div>
+          </section>
+          
+      <section class="methodology"><h3>Methodology and Source Notes</h3><ul><li>Source priority follows official/public datasets first, then structured APIs, then controlled scraping only when needed.</li><li>Current active Tennessee-first indicators include FRED-backed series plus Google Trends and configurable labor-demand aggregation from online job postings.</li><li>Signals are rule-based and deterministic; thresholds are configurable in the indicator registry.</li></ul></section>
+    </section>
+    
+    <div class="card">
+      <h1>BERC Daily Briefer | July 9, 2026</h1>
+<p>Prepared by Semih Yucekan</p>
+<h2>Executive Summary</h2>
+<ul class="brief-list">
+<li>Region: Tennessee</li>
+<li>Audience: Faculty-style morning read</li>
+<li>Signal environment: Stable to mixed</li>
+<li>Indicators collected successfully: 6</li>
+<li>Indicators failed or missing: 0</li>
+</ul>
+<h2>Indicator Snapshot</h2>
+<ul class="brief-list">
+<li>US Unemployment Rate (UNRATE): latest 4.20% on 2026-06-01; previous 4.30%; change -0.10%; pct change -2.33%</li>
+<li>US Initial Jobless Claims (ICSA): latest 215,000 on 2026-07-04; previous 217,000; change -2,000; pct change -0.92%</li>
+<li>Tennessee Unemployment Rate (TNUR): latest 3.60% on 2026-05-01; previous 3.60%; change 0.00%; pct change 0.00%</li>
+<li>Tennessee Nonfarm Employment (TNNA): latest 3,382.2 thousand on 2026-05-01; previous 3,376.5 thousand; change 5.7 thousand; pct change 0.17%</li>
+<li>US CPI (CPIAUCSL): latest 333.98 on 2026-05-01; previous 332.41; change 1.57; pct change 0.47%</li>
+<li>30Y Mortgage Rate (MORTGAGE30US): latest 6.43% on 2026-07-02; previous 6.49%; change -0.06%; pct change -0.92%</li>
+</ul>
+<h2>Warning Flags</h2>
+<ul class="brief-list">
+<li>[STABLE] No major warning flags triggered.</li>
+</ul>
+<h2>Caveats</h2>
+<ul class="brief-list">
+<li>This edition uses deterministic, rule-based summarization.</li>
+</ul>
+<h2>Platform Highlights</h2>
+<ul class="brief-list">
+<li>Expanded signal environment: Stable to mixed</li>
+<li>Expanded signal score: 1</li>
+<li>Indicator directions: 6 improving, 1 worsening, 1 stable, 2 unknown</li>
+</ul>
+<h2>Roadmap Status</h2>
+<ul class="brief-list">
+<li>unclassified: 10 active, 0 inactive, 10 total</li>
+</ul>
+<h2>Category Snapshot</h2>
+<ul class="brief-list">
+<li>Labor Market: signal=improving; improving=2, worsening=0, stable=1, unknown=1</li>
+<li>Consumer Activity: signal=stable; improving=1, worsening=1, stable=0, unknown=1</li>
+<li>Business Activity: signal=stable; improving=1, worsening=0, stable=0, unknown=0</li>
+<li>Housing Market: signal=improving; improving=1, worsening=0, stable=0, unknown=0</li>
+<li>Transportation / Travel: signal=improving; improving=1, worsening=0, stable=0, unknown=0</li>
+</ul>
+<h2>Source Methods</h2>
+<ul class="brief-list">
+<li>fred_api: 8 indicator(s)</li>
+<li>google_trends_api: 1 indicator(s)</li>
+<li>job_postings_aggregate: 1 indicator(s)</li>
+</ul>
+    </div>
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand"><strong>BERC Daily Briefer</strong> | Semih Yucekan</div>
+        <nav aria-label="BERC links">
+          <ul class="footer-list">
+            <li><span class="link-icon" aria-hidden="true">&#8599;</span><a href="https://www.mtsu.edu/" target="_blank" rel="noopener noreferrer">MTSU</a></li>
+            <li><span class="link-icon" aria-hidden="true">&#8599;</span><a href="https://www.mtsu.edu/berc/" target="_blank" rel="noopener noreferrer">BERC</a></li>
+            <li><span class="link-icon" aria-hidden="true">&#8599;</span><a href="https://urp.mtsu.edu/" target="_blank" rel="noopener noreferrer">COE-URP</a></li>
+            <li><span class="link-icon" aria-hidden="true">&#8599;</span><a href="https://www.mtsu.edu/give/" target="_blank" rel="noopener noreferrer">Donate BERC</a></li>
+            <li><span class="link-icon" aria-hidden="true">&#8599;</span><a href="https://www.instagram.com/mtsublueraiders/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+            <li><span class="link-icon" aria-hidden="true">&#8599;</span><a href="https://www.linkedin.com/school/middle-tennessee-state-university/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
