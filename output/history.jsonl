@@ -149,3 +149,4 @@
 {"generated_at": "2026-08-19T12:16:34.667563+00:00", "date": "2026-08-19", "signal_environment": "Stable to mixed", "signal_score": 0, "alert_count": 0, "html": "docs/briefs/2026-08-19.html", "json": "output/brief_2026-08-19.json"}
 {"generated_at": "2026-08-20T12:18:09.464328+00:00", "date": "2026-08-20", "signal_environment": "Stable to mixed", "signal_score": 0, "alert_count": 0, "html": "docs/briefs/2026-08-20.html", "json": "output/brief_2026-08-20.json"}
 {"generated_at": "2026-08-21T12:17:48.861484+00:00", "date": "2026-08-21", "signal_environment": "Stable to mixed", "signal_score": 0, "alert_count": 0, "html": "docs/briefs/2026-08-21.html", "json": "output/brief_2026-08-21.json"}
+{"generated_at": "2026-08-22T12:11:04.507465+00:00", "date": "2026-08-22", "signal_environment": "Stable to mixed", "signal_score": 0, "alert_count": 0, "html": "docs/briefs/2026-08-22.html", "json": "output/brief_2026-08-22.json"}
